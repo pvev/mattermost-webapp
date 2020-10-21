@@ -28,7 +28,6 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen a
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -57,7 +56,6 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen a
                       <FormattedMessage
                         defaultMessage="Restart Server"
                         id="admin.license.enterprise.restart"
-                        values={Object {}}
                       />
                     </LoadingWrapper>
                   </button>
@@ -75,7 +73,6 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen a
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -103,7 +100,6 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen a
             <FormattedMessage
               defaultMessage="Enterprise Edition License:"
               id="admin.license.enterprise-edition-license"
-              values={Object {}}
             />
           </label>
           <div
@@ -159,7 +155,6 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen w
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -192,10 +187,17 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen w
                       <FormattedMessage
                         defaultMessage="Upgrade to Enterprise Edition"
                         id="admin.license.enterprise.upgrade"
-                        values={Object {}}
                       />
                     </LoadingWrapper>
                   </button>
+                </p>
+                <p
+                  className="upgrade-legal-terms"
+                >
+                  <injectIntl(FormattedMarkdownMessage)
+                    defaultMessage="By clicking **Upgrade to Enterprise Edition**, I agree to the terms of the Mattermost Enterprise Edition License."
+                    id="admin.license.enterprise.upgrade.accept-terms"
+                  />
                 </p>
               </div>
             </div>
@@ -210,7 +212,6 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen w
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -238,7 +239,6 @@ exports[`components/admin_console/license_settings/LicenseSettings load screen w
             <FormattedMessage
               defaultMessage="Enterprise Edition License:"
               id="admin.license.enterprise-edition-license"
-              values={Object {}}
             />
           </label>
           <div
@@ -294,7 +294,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -312,7 +311,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -364,6 +362,7 @@ Your subscription details are as follows:
               </a>
                and 
               <a
+                data-testid="privacyPolicyLink"
                 href="https://about.mattermost.com/default-privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -382,7 +381,6 @@ Your subscription details are as follows:
             <FormattedMessage
               defaultMessage="License Key: "
               id="admin.license.key"
-              values={Object {}}
             />
           </label>
           <div
@@ -396,7 +394,6 @@ Your subscription details are as follows:
               <FormattedMessage
                 defaultMessage="Remove Enterprise License and Downgrade Server"
                 id="admin.license.keyRemove"
-                values={Object {}}
               />
             </button>
             <br />
@@ -442,7 +439,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -460,7 +456,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -516,6 +511,7 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
               </a>
                and 
               <a
+                data-testid="privacyPolicyLink"
                 href="https://about.mattermost.com/default-privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -534,7 +530,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License Key: "
               id="admin.license.key"
-              values={Object {}}
             />
           </label>
           <div
@@ -548,7 +543,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
               <FormattedMessage
                 defaultMessage="Remove Enterprise License and Downgrade Server"
                 id="admin.license.keyRemove"
-                values={Object {}}
               />
             </button>
             <br />
@@ -569,7 +563,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Enterprise Edition License:"
               id="admin.license.enterprise-edition-license"
-              values={Object {}}
             />
           </label>
           <div
@@ -625,7 +618,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -647,7 +639,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
                     <FormattedMessage
                       defaultMessage="Start trial"
                       id="admin.license.trial-request.submit"
-                      values={Object {}}
                     />
                   </LoadingWrapper>
                 </button>
@@ -672,7 +663,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -692,7 +682,6 @@ See ENTERPRISE-EDITION-LICENSE.txt in your root install directory for details. S
             <FormattedMessage
               defaultMessage="License Key: "
               id="admin.license.key"
-              values={Object {}}
             />
           </label>
           <div
@@ -707,7 +696,6 @@ See ENTERPRISE-EDITION-LICENSE.txt in your root install directory for details. S
                 <FormattedMessage
                   defaultMessage="Choose File"
                   id="admin.license.choose"
-                  values={Object {}}
                 />
               </button>
               <input
@@ -725,7 +713,6 @@ See ENTERPRISE-EDITION-LICENSE.txt in your root install directory for details. S
               <FormattedMessage
                 defaultMessage="Upload"
                 id="admin.license.upload"
-                values={Object {}}
               />
             </button>
             <div
@@ -734,7 +721,6 @@ See ENTERPRISE-EDITION-LICENSE.txt in your root install directory for details. S
               <FormattedMessage
                 defaultMessage="No file uploaded"
                 id="admin.license.noFile"
-                values={Object {}}
               />
             </div>
             <br />
@@ -782,7 +768,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -804,7 +789,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
                     <FormattedMessage
                       defaultMessage="Start trial"
                       id="admin.license.trial-request.submit"
-                      values={Object {}}
                     />
                   </LoadingWrapper>
                 </button>
@@ -829,7 +813,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -854,7 +837,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License Key: "
               id="admin.license.key"
-              values={Object {}}
             />
           </label>
           <div
@@ -869,7 +851,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
                 <FormattedMessage
                   defaultMessage="Choose File"
                   id="admin.license.choose"
-                  values={Object {}}
                 />
               </button>
               <input
@@ -887,7 +868,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
               <FormattedMessage
                 defaultMessage="Upload"
                 id="admin.license.upload"
-                values={Object {}}
               />
             </button>
             <div
@@ -896,7 +876,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
               <FormattedMessage
                 defaultMessage="No file uploaded"
                 id="admin.license.noFile"
-                values={Object {}}
               />
             </div>
             <br />
@@ -919,7 +898,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Enterprise Edition License:"
               id="admin.license.enterprise-edition-license"
-              values={Object {}}
             />
           </label>
           <div
@@ -975,7 +953,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -1008,10 +985,17 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
                       <FormattedMessage
                         defaultMessage="Upgrade to Enterprise Edition"
                         id="admin.license.enterprise.upgrade"
-                        values={Object {}}
                       />
                     </LoadingWrapper>
                   </button>
+                </p>
+                <p
+                  className="upgrade-legal-terms"
+                >
+                  <injectIntl(FormattedMarkdownMessage)
+                    defaultMessage="By clicking **Upgrade to Enterprise Edition**, I agree to the terms of the Mattermost Enterprise Edition License."
+                    id="admin.license.enterprise.upgrade.accept-terms"
+                  />
                 </p>
               </div>
             </div>
@@ -1026,7 +1010,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -1054,7 +1037,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Enterprise Edition License:"
               id="admin.license.enterprise-edition-license"
-              values={Object {}}
             />
           </label>
           <div
@@ -1110,7 +1092,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Edition: "
               id="admin.license.edition"
-              values={Object {}}
             />
           </label>
           <div
@@ -1143,10 +1124,17 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
                       <FormattedMessage
                         defaultMessage="Upgrade to Enterprise Edition"
                         id="admin.license.enterprise.upgrade"
-                        values={Object {}}
                       />
                     </LoadingWrapper>
                   </button>
+                </p>
+                <p
+                  className="upgrade-legal-terms"
+                >
+                  <injectIntl(FormattedMarkdownMessage)
+                    defaultMessage="By clicking **Upgrade to Enterprise Edition**, I agree to the terms of the Mattermost Enterprise Edition License."
+                    id="admin.license.enterprise.upgrade.accept-terms"
+                  />
                 </p>
               </div>
             </div>
@@ -1161,7 +1149,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="License: "
               id="admin.license.type"
-              values={Object {}}
             />
           </label>
           <div
@@ -1189,7 +1176,6 @@ exports[`components/admin_console/license_settings/LicenseSettings should match 
             <FormattedMessage
               defaultMessage="Enterprise Edition License:"
               id="admin.license.enterprise-edition-license"
-              values={Object {}}
             />
           </label>
           <div

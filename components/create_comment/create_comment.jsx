@@ -697,9 +697,7 @@ class CreateComment extends React.PureComponent {
         const {draft} = this.state;
         const updatedDraft = {...draft, message};
         this.props.onUpdateCommentDraft(updatedDraft);
-        this.setState({draft: updatedDraft, serverError}, () => {
-            this.scrollToBottom();
-        });
+        this.setState({draft: updatedDraft, serverError});
         this.draftsForPost[this.props.rootId] = updatedDraft;
     }
 
@@ -708,6 +706,10 @@ class CreateComment extends React.PureComponent {
         this.setState({
             caretPosition,
         });
+    }
+
+    handleSelect = (e) => {
+        Utils.adjustSelection(this.refs.textbox.getInputBox(), e);
     }
 
     handleKeyDown = (e) => {
@@ -757,12 +759,35 @@ class CreateComment extends React.PureComponent {
             } else if (Utils.isKeyPressed(e, Constants.KeyCodes.DOWN)) {
                 e.preventDefault();
                 this.props.onMoveHistoryIndexForward();
+            } else if (Utils.isKeyPressed(e, Constants.KeyCodes.B) ||
+                       Utils.isKeyPressed(e, Constants.KeyCodes.I)) {
+                this.applyHotkeyMarkdown(e);
             }
         }
 
         if (lastMessageReactionKeyCombo) {
             this.reactToLastMessage(e);
         }
+    }
+
+    applyHotkeyMarkdown = (e) => {
+        const res = Utils.applyHotkeyMarkdown(e);
+
+        const {draft} = this.state;
+        const modifiedDraft = {
+            ...draft,
+            message: res.message,
+        };
+
+        this.props.onUpdateCommentDraft(modifiedDraft);
+        this.draftsForPost[this.props.rootId] = modifiedDraft;
+
+        this.setState({
+            draft: modifiedDraft,
+        }, () => {
+            const textbox = this.refs.textbox.getInputBox();
+            Utils.setSelectionRange(textbox, res.selectionStart, res.selectionEnd);
+        });
     }
 
     handleFileUploadChange = () => {
@@ -1196,6 +1221,7 @@ class CreateComment extends React.PureComponent {
                                 onChange={this.handleChange}
                                 onKeyPress={this.commentMsgKeyPress}
                                 onKeyDown={this.handleKeyDown}
+                                onSelect={this.handleSelect}
                                 onMouseUp={this.handleMouseUpKeyUp}
                                 onKeyUp={this.handleMouseUpKeyUp}
                                 onComposition={this.emitTypingEvent}

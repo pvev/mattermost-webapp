@@ -30,6 +30,7 @@ export default class SuggestionList extends React.PureComponent {
         selection: PropTypes.string.isRequired,
         components: PropTypes.array.isRequired,
         wrapperHeight: PropTypes.number,
+        suggestionBoxAlgn: PropTypes.number,
     };
 
     static defaultProps = {
@@ -224,7 +225,7 @@ export default class SuggestionList extends React.PureComponent {
 
         const contentStyle = {maxHeight};
 
-        return (<div className={mainClass}>
+        return (<div className={mainClass} style={{left: this.props.suggestionBoxAlgn}}>
             <div
                 id='suggestionList'
                 role='list'

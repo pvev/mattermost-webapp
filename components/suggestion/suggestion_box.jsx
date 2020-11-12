@@ -199,10 +199,12 @@ export default class SuggestionBox extends React.PureComponent {
             selection: '',
             allowDividers: true,
             presentationType: 'text',
+            suggestionBoxAlgn: 0
         };
 
         this.inputRef = React.createRef();
     }
+
 
     componentDidMount() {
         if (this.props.listenForMentionKeyClick) {
@@ -323,6 +325,7 @@ export default class SuggestionBox extends React.PureComponent {
 
         if (this.props.openOnFocus || this.props.openWhenEmpty) {
             setTimeout(() => {
+                
                 const textbox = this.getTextbox();
                 if (textbox) {
                     const pretext = textbox.value.substring(0, textbox.selectionEnd);
@@ -651,13 +654,18 @@ export default class SuggestionBox extends React.PureComponent {
         if (complete) {
             callback = this.handleReceivedSuggestionsAndComplete;
         }
+        console.log('I changed now!! 2');
         for (const provider of this.props.providers) {
             handled = provider.handlePretextChanged(pretext, callback) || handled;
 
             if (handled) {
+                // get the alignment for the box and set it in the component state
+                let suggestionBoxAlgn = Utils.getsuggestionBoxAlgn(this.getTextbox())
+                // this.setState({suggestionBoxAlgn: suggestionBoxAlgn});
                 this.setState({
                     presentationType: provider.presentationType(),
                     allowDividers: provider.allowDividers(),
+                    suggestionBoxAlgn: suggestionBoxAlgn,
                 });
 
                 break;
@@ -770,7 +778,7 @@ export default class SuggestionBox extends React.PureComponent {
                     onSelect={this.handleSelect}
                 />
                 {(this.props.openWhenEmpty || this.props.value.length >= this.props.requiredCharacters) && this.state.presentationType === 'text' &&
-                    <div style={{width: this.state.width}}>
+                    <div style={{width: this.state.width, border: "3px solid red"}}>
                         <SuggestionListComponent
                             ariaLiveRef={this.suggestionReadOut}
                             open={this.state.focused || this.props.forceSuggestionsWhenBlur}
@@ -785,6 +793,7 @@ export default class SuggestionBox extends React.PureComponent {
                             matchedPretext={this.state.matchedPretext}
                             items={this.state.items}
                             terms={this.state.terms}
+                            suggestionBoxAlgn={this.state.suggestionBoxAlgn}
                             selection={this.state.selection}
                             components={this.state.components}
                             wrapperHeight={this.props.wrapperHeight}

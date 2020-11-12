@@ -1066,6 +1066,85 @@ export function getCaretPosition(el) {
     return 0;
 }
 
+export function createCopy(textArea) {
+    let copy = document.createElement('div');
+    copy.textContent = textArea.value;
+    let style = getComputedStyle(textArea);
+    [
+     'fontFamily',
+     'fontSize',
+     'fontWeight',
+     'wordWrap', 
+     'whiteSpace',
+     'borderLeftWidth',
+     'borderTopWidth',
+     'borderRightWidth',
+     'borderBottomWidth',
+    ].forEach(function(key) {
+      copy.style[key] = style[key];
+    });
+    copy.style.overflow = 'auto';
+    copy.style.width = textArea.offsetWidth + 'px';
+    copy.style.height = textArea.offsetHeight + 'px';
+    copy.style.position = 'absolute';
+    copy.style.left = textArea.offsetLeft + 'px';
+    copy.style.top = textArea.offsetTop + 'px';
+    document.body.appendChild(copy);
+    return copy;
+  }
+
+export function getCaretXYCoordinate(textArea) {
+    let start = textArea.selectionStart;
+    let end = textArea.selectionEnd;
+    let copy = createCopy(textArea);
+    let range = document.createRange();
+    range.setStart(copy.firstChild, start);
+    range.setEnd(copy.firstChild, end);
+    let selection = document.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    let rect = range.getBoundingClientRect();
+    document.body.removeChild(copy);
+    textArea.selectionStart = start;
+    textArea.selectionEnd = end;
+    textArea.focus();
+    return {
+      x: rect.left - textArea.scrollLeft,
+      y: rect.top - textArea.scrollTop
+    };
+}
+
+export function getViewportSize(w) {
+
+    // Use the specified window or the current window if no argument
+    w = w || window;
+
+    // This works for all browsers except IE8 and before
+    if (w.innerWidth != null) return { w: w.innerWidth, h: w.innerHeight };
+
+    // For IE (or any browser) in Standards mode
+    var d = w.document;
+    if (document.compatMode == "CSS1Compat")
+        return { w: d.documentElement.clientWidth,
+           h: d.documentElement.clientHeight };
+
+    // For browsers in Quirks mode
+    return { w: d.body.clientWidth, h: d.body.clientHeight };
+
+}
+
+export function getsuggestionBoxAlgn(textArea) {
+    let position = getCaretXYCoordinate(textArea);
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    console.log('viewport width; ' + vw);
+    const viewp = getViewportSize();
+    console.log('sedond viewport; ' + viewp.w);
+
+    console.log('position x: ' + position.x);
+    // if position x + caja.size > viewport Then val = vieport - caja.size
+    return position.x - 15;
+}
+
 export function setSelectionRange(input, selectionStart, selectionEnd) {
     if (input.setSelectionRange) {
         input.focus();

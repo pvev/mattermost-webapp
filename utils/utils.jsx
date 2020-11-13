@@ -34,6 +34,7 @@ import upstairs from 'sounds/upstairs.mp3';
 import {t} from 'utils/i18n';
 import store from 'stores/redux_store.jsx';
 import {getCurrentLocale, getTranslations} from 'selectors/i18n';
+import { constants } from 'zlib';
 
 export function isMac() {
     return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
@@ -1091,9 +1092,14 @@ export function createCopy(textArea) {
     copy.style.top = textArea.offsetTop + 'px';
     document.body.appendChild(copy);
     return copy;
-  }
+}
+
+function convertRemToPixels(rem) {    
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
 
 export function getCaretXYCoordinate(textArea) {
+    debugger;
     let start = textArea.selectionStart;
     let end = textArea.selectionEnd;
     let copy = createCopy(textArea);
@@ -1109,40 +1115,49 @@ export function getCaretXYCoordinate(textArea) {
     textArea.selectionEnd = end;
     textArea.focus();
     return {
-      x: rect.left - textArea.scrollLeft,
-      y: rect.top - textArea.scrollTop
+      x: Math.floor(rect.left - textArea.scrollLeft),
+      y: Math.floor(rect.top - textArea.scrollTop)
     };
 }
 
 export function getViewportSize(w) {
-
     // Use the specified window or the current window if no argument
     w = w || window;
-
     // This works for all browsers except IE8 and before
     if (w.innerWidth != null) return { w: w.innerWidth, h: w.innerHeight };
-
     // For IE (or any browser) in Standards mode
     var d = w.document;
     if (document.compatMode == "CSS1Compat")
         return { w: d.documentElement.clientWidth,
            h: d.documentElement.clientHeight };
-
     // For browsers in Quirks mode
     return { w: d.body.clientWidth, h: d.body.clientHeight };
-
 }
 
-export function getsuggestionBoxAlgn(textArea) {
-    let position = getCaretXYCoordinate(textArea);
-    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-    console.log('viewport width; ' + vw);
-    const viewp = getViewportSize();
-    console.log('sedond viewport; ' + viewp.w);
+export function offsetTopLeft(el) {
+    let rect = el.getBoundingClientRect();
+    let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;  
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+}
 
-    console.log('position x: ' + position.x);
-    // if position x + caja.size > viewport Then val = vieport - caja.size
-    return position.x - 15;
+
+export function getsuggestionBoxAlgn(textArea) {
+    const caretXInTxtArea = getCaretXYCoordinate(textArea).x;
+    const viewportWidth = getViewportSize().w;
+    // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
+    const suggestionBoxSize = 496;
+    // value in pixels for the offsetLeft for the textArea
+    const txtAreaOffsetLft = offsetTopLeft(textArea).left;
+    // padding left of 15px + 1px border
+    const txtAreaPaddingLft = 16;
+    // menion name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
+    const mentionNamePaddingLft = convertRemToPixels(2.4);
+    // half of width of avatar stated in .Avatar.Avatar-sm (24px)
+    const avatarWidth = 12;
+    const remSize = convertRemToPixels(1);
+    const moveBoxToRightPX = caretXInTxtArea + txtAreaPaddingLft - remSize - avatarWidth - mentionNamePaddingLft
+    return moveBoxToRightPX;
 }
 
 export function setSelectionRange(input, selectionStart, selectionEnd) {

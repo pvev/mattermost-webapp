@@ -225,12 +225,12 @@ export default class SuggestionList extends React.PureComponent {
 
         const contentStyle = {maxHeight};
 
-        return (<div className={mainClass} style={{left: this.props.suggestionBoxAlgn}}>
+        return (<div className={mainClass}>
             <div
                 id='suggestionList'
                 role='list'
                 ref={this.contentRef}
-                style={{...contentStyle}}
+                style={{...contentStyle, left: this.props.suggestionBoxAlgn}}
                 className={contentClass}
                 onMouseDown={this.props.preventClose}
             >

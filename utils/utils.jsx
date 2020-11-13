@@ -1067,10 +1067,10 @@ export function getCaretPosition(el) {
     return 0;
 }
 
-export function createCopy(textArea) {
-    let copy = document.createElement('div');
+export function createTextAreaCopy(textArea) {
+    const copy = document.createElement('div');
     copy.textContent = textArea.value;
-    let style = getComputedStyle(textArea);
+    const style = getComputedStyle(textArea);
     [
      'fontFamily',
      'fontSize',
@@ -1094,21 +1094,21 @@ export function createCopy(textArea) {
     return copy;
 }
 
-function convertRemToPixels(rem) {    
+export function convertRemToPixels(rem) {    
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
 export function getCaretXYCoordinate(textArea) {
-    let start = textArea.selectionStart;
-    let end = textArea.selectionEnd;
-    let copy = createCopy(textArea);
-    let range = document.createRange();
+    const start = textArea.selectionStart;
+    const end = textArea.selectionEnd;
+    const copy = createTextAreaCopy(textArea);
+    const range = document.createRange();
     range.setStart(copy.firstChild, start);
     range.setEnd(copy.firstChild, end);
-    let selection = document.getSelection();
+    const selection = document.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
-    let rect = range.getBoundingClientRect();
+    const rect = range.getBoundingClientRect();
     document.body.removeChild(copy);
     textArea.selectionStart = start;
     textArea.selectionEnd = end;
@@ -1125,7 +1125,7 @@ export function getViewportSize(w) {
     // This works for all browsers except IE8 and before
     if (w.innerWidth != null) return { w: w.innerWidth, h: w.innerHeight };
     // For IE (or any browser) in Standards mode
-    var d = w.document;
+    const d = w.document;
     if (document.compatMode == "CSS1Compat")
         return { w: d.documentElement.clientWidth,
            h: d.documentElement.clientHeight };
@@ -1134,14 +1134,14 @@ export function getViewportSize(w) {
 }
 
 export function offsetTopLeft(el) {
-    let rect = el.getBoundingClientRect();
-    let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;  
+    const rect = el.getBoundingClientRect();
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;  
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
 }
 
 
-export function getsuggestionBoxAlgn(textArea) {
+export function getSuggestionBoxAlgn(textArea) {
     const caretXInTxtArea = getCaretXYCoordinate(textArea).x;
     const viewportWidth = getViewportSize().w;
     // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
@@ -1154,15 +1154,17 @@ export function getsuggestionBoxAlgn(textArea) {
     const mentionNamePaddingLft = convertRemToPixels(2.4);
     // half of width of avatar stated in .Avatar.Avatar-sm (24px)
     const avatarWidth = 12;
+    // TODO define numbers as constants on top of the file
     const remSize = convertRemToPixels(1);
     const pxToTheRight = caretXInTxtArea + txtAreaPaddingLft - remSize - avatarWidth - mentionNamePaddingLft;
     return {
         IsOutOfRightSideViewport: calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth),
-        rightAlignment: Math.max(0, pxToTheRight)
+        rightAlignment: isMobile() ? 0 : Math.max(0, pxToTheRight)
     };
 }
 
 export function calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth) {
+    if (isMobile()) return false;
     return (caretXInTxtArea + txtAreaOffsetLft + suggestionBoxWidth) > viewportWidth;
 }
 

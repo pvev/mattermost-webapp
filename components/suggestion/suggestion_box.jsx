@@ -199,7 +199,7 @@ export default class SuggestionBox extends React.PureComponent {
             selection: '',
             allowDividers: true,
             presentationType: 'text',
-            suggestionBoxAlgn: 0
+            suggestionBoxAlgn: {}
         };
 
         this.inputRef = React.createRef();
@@ -654,14 +654,12 @@ export default class SuggestionBox extends React.PureComponent {
         if (complete) {
             callback = this.handleReceivedSuggestionsAndComplete;
         }
-        console.log('I changed now!! 2');
         for (const provider of this.props.providers) {
             handled = provider.handlePretextChanged(pretext, callback) || handled;
 
             if (handled) {
                 // get the alignment for the box and set it in the component state
-                let suggestionBoxAlgn = Utils.getsuggestionBoxAlgn(this.getTextbox())
-                // this.setState({suggestionBoxAlgn: suggestionBoxAlgn});
+                const suggestionBoxAlgn = Utils.getsuggestionBoxAlgn(this.getTextbox());
                 this.setState({
                     presentationType: provider.presentationType(),
                     allowDividers: provider.allowDividers(),

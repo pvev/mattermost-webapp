@@ -1099,7 +1099,6 @@ function convertRemToPixels(rem) {
 }
 
 export function getCaretXYCoordinate(textArea) {
-    debugger;
     let start = textArea.selectionStart;
     let end = textArea.selectionEnd;
     let copy = createCopy(textArea);
@@ -1146,7 +1145,7 @@ export function getsuggestionBoxAlgn(textArea) {
     const caretXInTxtArea = getCaretXYCoordinate(textArea).x;
     const viewportWidth = getViewportSize().w;
     // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
-    const suggestionBoxSize = 496;
+    const suggestionBoxWidth = 496;
     // value in pixels for the offsetLeft for the textArea
     const txtAreaOffsetLft = offsetTopLeft(textArea).left;
     // padding left of 15px + 1px border
@@ -1156,8 +1155,15 @@ export function getsuggestionBoxAlgn(textArea) {
     // half of width of avatar stated in .Avatar.Avatar-sm (24px)
     const avatarWidth = 12;
     const remSize = convertRemToPixels(1);
-    const moveBoxToRightPX = caretXInTxtArea + txtAreaPaddingLft - remSize - avatarWidth - mentionNamePaddingLft
-    return moveBoxToRightPX;
+    const pxToTheRight = caretXInTxtArea + txtAreaPaddingLft - remSize - avatarWidth - mentionNamePaddingLft;
+    return {
+        IsOutOfRightSideViewport: calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth),
+        rightAlignment: Math.max(0, pxToTheRight)
+    };
+}
+
+export function calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth) {
+    return (caretXInTxtArea + txtAreaOffsetLft + suggestionBoxWidth) > viewportWidth;
 }
 
 export function setSelectionRange(input, selectionStart, selectionEnd) {

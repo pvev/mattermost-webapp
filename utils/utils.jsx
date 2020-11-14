@@ -1080,6 +1080,8 @@ export function createTextAreaCopy(textArea) {
         'borderTopWidth',
         'borderRightWidth',
         'borderBottomWidth',
+        'paddingRight',
+        'paddingLeft'
     ].forEach((key) => {
         copy.style[key] = style[key];
     });
@@ -1165,7 +1167,7 @@ export function getSuggestionBoxAlgn(textArea) {
     const avatarWidth = 12;
 
     // TODO define numbers as constants on top of the file
-    const remSize = convertRemToPixels(0.5);
+    const remSize = convertRemToPixels(1.5);
     const pxToTheRight = (caretXInTxtArea + txtAreaPaddingLft) - (remSize + avatarWidth + mentionNamePaddingLft);
     return {
         IsOutOfRightSideViewport: calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth),

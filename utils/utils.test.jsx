@@ -1030,3 +1030,131 @@ describe('Utils.adjustSelection', () => {
         expect(input.setSelectionRange).toHaveBeenCalledWith(18, 26);
     });
 });
+
+describe('Utils.copyTextAreaToDiv', () => {
+    test('copyTextAreaToDiv actually creates a div element', () => {
+        const textArea = document.createElement('textarea');
+
+        const copy = Utils.copyTextAreaToDiv(textArea);
+
+        expect(copy.nodeName).toEqual("DIV");
+    });
+
+    test('copyTextAreaToDiv copies the content into the div element', () => {
+        const textArea = document.createElement('textarea');
+        textArea.value= "the content";
+
+        const copy = Utils.copyTextAreaToDiv(textArea);
+
+        expect(copy.innerHTML).toEqual("the content");
+    });
+
+    test('copyTextAreaToDiv correctly copies the styles of the textArea element', () => {
+        const textArea = document.createElement('textarea');
+        textArea.style['fontFamily'] = "Sans-serif";
+
+        const copy = Utils.copyTextAreaToDiv(textArea);
+
+        expect(copy.style["fontFamily"]).toEqual("Sans-serif");
+    });
+
+});
+
+describe('Utils.getCaretXYCoordinate', () => {
+
+    test('getCaretXYCoordinate returns the coordinates of the caret', () => {
+        const textArea = document.createElement('textarea');
+        document.createRange = () => {
+            const range = new Range();
+                    
+            range.getBoundingClientRect = () => {
+              return {
+                top: 10,
+                left: 15
+              };
+            };
+          
+            return range;
+          }
+        textArea.value= "m".repeat(10);
+
+        const coordinates = Utils.getCaretXYCoordinate(textArea);
+
+        expect(coordinates.x).toEqual(15);
+        expect(coordinates.y).toEqual(10);
+
+        document.createRange = undefined;
+
+    });
+
+    test('getCaretXYCoordinate returns the coordinates of the caret with a left scroll', () => {
+        const textArea = document.createElement('textarea');
+        document.createRange = () => {
+            const range = new Range();
+                    
+            range.getBoundingClientRect = () => {
+              return {
+                top: 10,
+                left: 15
+              };
+            };
+          
+            return range;
+          }
+        textArea.value= "m".repeat(10);
+        textArea.scrollLeft = 5;
+
+        const coordinates = Utils.getCaretXYCoordinate(textArea);
+
+        expect(coordinates.x).toEqual(10);
+
+        document.createRange = undefined;
+
+    });
+
+});
+
+describe('Utils.getViewportSize', () => {
+    test('getViewportSize returns the right viewport using default jsDom window', () => {
+        // the default values of the jsDom window are w: 1024, h: 768
+        const viewportDimensions = Utils.getViewportSize();
+
+        expect(viewportDimensions.w).toEqual(1024);
+        expect(viewportDimensions.h).toEqual(768);
+    });
+
+    test('getViewportSize returns the right viewport width with custom parameter', () => {
+        const mockWindow = {document: { body: {}, compatMode: undefined}};
+        mockWindow.document.body.clientWidth = 1025;
+        mockWindow.document.body.clientHeight = 860;
+
+        const viewportDimensions = Utils.getViewportSize(mockWindow);
+
+        expect(viewportDimensions.w).toEqual(1025);
+        expect(viewportDimensions.h).toEqual(860);
+
+    });
+
+    test('getViewportSize returns the right viewport width with custom parameter - innerWidth', () => {
+        const mockWindow = {innerWidth: 1027, innerHeight: 767};
+
+        const viewportDimensions = Utils.getViewportSize(mockWindow);
+
+        expect(viewportDimensions.w).toEqual(1027);
+        expect(viewportDimensions.h).toEqual(767);
+
+    });
+
+    test('getViewportSize returns the right viewport width with custom parameter - CSS1Compat', () => {
+        const mockWindow = {document: { documentElement: {}, compatMode: "CSS1Compat"}};
+        mockWindow.document.documentElement.clientWidth = 1023;
+        mockWindow.document.documentElement.clientHeight = 861;
+
+        const viewportDimensions = Utils.getViewportSize(mockWindow);
+
+        expect(viewportDimensions.w).toEqual(1023);
+        expect(viewportDimensions.h).toEqual(861);
+
+    });
+
+});

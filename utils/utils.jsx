@@ -1066,10 +1066,22 @@ export function getCaretPosition(el) {
     return 0;
 }
 
-export function createTextAreaCopy(textArea) {
-    const copy = document.createElement('div');
+export function createDocumentElement(el) {
+    return document.createElement(el);
+}
+
+export function getElementComputedStyle(el) {
+    return getComputedStyle(el);
+}
+
+export function addElementToDocument(el) {
+    document.body.appendChild(el);
+}
+
+export function copyTextAreaToDiv(textArea) {
+    const copy = createDocumentElement('div');
     copy.textContent = textArea.value;
-    const style = getComputedStyle(textArea);
+    const style = getElementComputedStyle(textArea);
     [
         'fontFamily',
         'fontSize',
@@ -1091,18 +1103,18 @@ export function createTextAreaCopy(textArea) {
     copy.style.position = 'absolute';
     copy.style.left = textArea.offsetLeft + 'px';
     copy.style.top = textArea.offsetTop + 'px';
-    document.body.appendChild(copy);
+    addElementToDocument(copy);
     return copy;
 }
 
 export function convertRemToPixels(rem) {
-    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+    return rem * parseFloat(getElementComputedStyle(document.documentElement).fontSize);
 }
 
 export function getCaretXYCoordinate(textArea) {
     const start = textArea.selectionStart;
     const end = textArea.selectionEnd;
-    const copy = createTextAreaCopy(textArea);
+    const copy = copyTextAreaToDiv(textArea);
     const range = document.createRange();
     range.setStart(copy.firstChild, start);
     range.setEnd(copy.firstChild, end);
@@ -1121,22 +1133,17 @@ export function getCaretXYCoordinate(textArea) {
 }
 
 export function getViewportSize(win) {
-    // Use the specified window or the current window if no argument
     const w = win || window;
 
-    // This works for all browsers except IE8 and before
     if (w.innerWidth != null) {
         return {w: w.innerWidth, h: w.innerHeight};
     }
 
-    // For IE (or any browser) in Standards mode
     const d = w.document;
-    if (document.compatMode === 'CSS1Compat') {
+    if (d.compatMode === 'CSS1Compat') {
         return {w: d.documentElement.clientWidth,
             h: d.documentElement.clientHeight};
     }
-
-    // For browsers in Quirks mode
     return {w: d.body.clientWidth, h: d.body.clientHeight};
 }
 

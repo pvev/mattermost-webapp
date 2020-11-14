@@ -1175,6 +1175,7 @@ export function getSuggestionBoxAlgn(textArea) {
 
     // In order to center the caret to the avatar icon, we need to substract 1.5 rem (the average at size)
     const pxToAlignCaretToIcon = convertRemToPixels(1.5);
+
     const pxToTheRight = (caretXInTxtArea + txtAreaPaddingLft) - (pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft);
     return {
         IsOutOfRightSideViewport: calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth),

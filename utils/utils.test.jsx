@@ -1158,3 +1158,20 @@ describe('Utils.getViewportSize', () => {
     });
 
 });
+
+describe('Utils.offsetTopLeft', () => {
+    test('offsetTopLeft returns the right offset values', () => {
+        const textArea = {
+            getBoundingClientRect: () => {
+                return {
+                    top: 50,
+                    left: 100,
+                }
+            }
+        }
+
+        const offsetTopLeft = Utils.offsetTopLeft(textArea);
+        expect(offsetTopLeft.top).toEqual(50);
+        expect(offsetTopLeft.left).toEqual(100);
+    });
+});

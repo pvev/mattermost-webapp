@@ -1152,23 +1152,23 @@ export function getSuggestionBoxAlgn(textArea) {
     const viewportWidth = getViewportSize().w;
 
     // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
-    const suggestionBoxWidth = 496;
+    const suggestionBoxWidth = Constants.SUGGESTION_LIST_MODAL_WIDTH;
 
     // value in pixels for the offsetLeft for the textArea
     const txtAreaOffsetLft = offsetTopLeft(textArea).left;
 
-    // padding left of 15px + 1px border
-    const txtAreaPaddingLft = 16;
+    // textArea padding left of 15px defined in the _post.scss line 392 + 1px from the border
+    const txtAreaPaddingLft = Constants.TEXTAREA_PADDING_LEFT + Constants.TEXTAREA_BORDER_WIDTH;
 
-    // menion name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
-    const mentionNamePaddingLft = convertRemToPixels(2.4);
+    // mention name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
+    const mentionNamePaddingLft = convertRemToPixels(Constants.MENTION_NAME_PADDING_LEFT);
 
     // half of width of avatar stated in .Avatar.Avatar-sm (24px)
-    const avatarWidth = 12;
+    const avatarWidth = Constants.AVATAR_WIDTH / 2;
 
-    // TODO define numbers as constants on top of the file
-    const remSize = convertRemToPixels(1.5);
-    const pxToTheRight = (caretXInTxtArea + txtAreaPaddingLft) - (remSize + avatarWidth + mentionNamePaddingLft);
+    // In order to center the caret to the avatar icon, we need to substract 1.5 rem (the average at size)
+    const pxToAlignCaretToIcon = convertRemToPixels(1.5);
+    const pxToTheRight = (caretXInTxtArea + txtAreaPaddingLft) - (pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft);
     return {
         IsOutOfRightSideViewport: calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth),
         rightAlignment: Math.max(0, pxToTheRight),

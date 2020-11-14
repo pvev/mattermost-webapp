@@ -199,12 +199,11 @@ export default class SuggestionBox extends React.PureComponent {
             selection: '',
             allowDividers: true,
             presentationType: 'text',
-            suggestionBoxAlgn: {}
+            suggestionBoxAlgn: {},
         };
 
         this.inputRef = React.createRef();
     }
-
 
     componentDidMount() {
         if (this.props.listenForMentionKeyClick) {
@@ -325,7 +324,6 @@ export default class SuggestionBox extends React.PureComponent {
 
         if (this.props.openOnFocus || this.props.openWhenEmpty) {
             setTimeout(() => {
-                
                 const textbox = this.getTextbox();
                 if (textbox) {
                     const pretext = textbox.value.substring(0, textbox.selectionEnd);
@@ -663,7 +661,7 @@ export default class SuggestionBox extends React.PureComponent {
                 this.setState({
                     presentationType: provider.presentationType(),
                     allowDividers: provider.allowDividers(),
-                    suggestionBoxAlgn: suggestionBoxAlgn,
+                    suggestionBoxAlgn,
                 });
 
                 break;

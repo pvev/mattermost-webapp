@@ -34,7 +34,6 @@ import upstairs from 'sounds/upstairs.mp3';
 import {t} from 'utils/i18n';
 import store from 'stores/redux_store.jsx';
 import {getCurrentLocale, getTranslations} from 'selectors/i18n';
-import { constants } from 'zlib';
 
 export function isMac() {
     return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
@@ -1072,17 +1071,17 @@ export function createTextAreaCopy(textArea) {
     copy.textContent = textArea.value;
     const style = getComputedStyle(textArea);
     [
-     'fontFamily',
-     'fontSize',
-     'fontWeight',
-     'wordWrap', 
-     'whiteSpace',
-     'borderLeftWidth',
-     'borderTopWidth',
-     'borderRightWidth',
-     'borderBottomWidth',
-    ].forEach(function(key) {
-      copy.style[key] = style[key];
+        'fontFamily',
+        'fontSize',
+        'fontWeight',
+        'wordWrap',
+        'whiteSpace',
+        'borderLeftWidth',
+        'borderTopWidth',
+        'borderRightWidth',
+        'borderBottomWidth',
+    ].forEach((key) => {
+        copy.style[key] = style[key];
     });
     copy.style.overflow = 'auto';
     copy.style.width = textArea.offsetWidth + 'px';
@@ -1094,7 +1093,7 @@ export function createTextAreaCopy(textArea) {
     return copy;
 }
 
-export function convertRemToPixels(rem) {    
+export function convertRemToPixels(rem) {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
@@ -1114,57 +1113,67 @@ export function getCaretXYCoordinate(textArea) {
     textArea.selectionEnd = end;
     textArea.focus();
     return {
-      x: Math.floor(rect.left - textArea.scrollLeft),
-      y: Math.floor(rect.top - textArea.scrollTop)
+        x: Math.floor(rect.left - textArea.scrollLeft),
+        y: Math.floor(rect.top - textArea.scrollTop),
     };
 }
 
-export function getViewportSize(w) {
+export function getViewportSize(win) {
     // Use the specified window or the current window if no argument
-    w = w || window;
+    const w = win || window;
+
     // This works for all browsers except IE8 and before
-    if (w.innerWidth != null) return { w: w.innerWidth, h: w.innerHeight };
+    if (w.innerWidth != null) {
+        return {w: w.innerWidth, h: w.innerHeight};
+    }
+
     // For IE (or any browser) in Standards mode
     const d = w.document;
-    if (document.compatMode == "CSS1Compat")
-        return { w: d.documentElement.clientWidth,
-           h: d.documentElement.clientHeight };
+    if (document.compatMode === 'CSS1Compat') {
+        return {w: d.documentElement.clientWidth,
+            h: d.documentElement.clientHeight};
+    }
+
     // For browsers in Quirks mode
-    return { w: d.body.clientWidth, h: d.body.clientHeight };
+    return {w: d.body.clientWidth, h: d.body.clientHeight};
 }
 
 export function offsetTopLeft(el) {
     const rect = el.getBoundingClientRect();
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;  
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return {top: rect.top + scrollTop, left: rect.left + scrollLeft};
 }
-
 
 export function getSuggestionBoxAlgn(textArea) {
     const caretXInTxtArea = getCaretXYCoordinate(textArea).x;
     const viewportWidth = getViewportSize().w;
+
     // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
     const suggestionBoxWidth = 496;
+
     // value in pixels for the offsetLeft for the textArea
     const txtAreaOffsetLft = offsetTopLeft(textArea).left;
+
     // padding left of 15px + 1px border
     const txtAreaPaddingLft = 16;
+
     // menion name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
     const mentionNamePaddingLft = convertRemToPixels(2.4);
+
     // half of width of avatar stated in .Avatar.Avatar-sm (24px)
     const avatarWidth = 12;
+
     // TODO define numbers as constants on top of the file
     const remSize = convertRemToPixels(1);
-    const pxToTheRight = caretXInTxtArea + txtAreaPaddingLft - remSize - avatarWidth - mentionNamePaddingLft;
+    const pxToTheRight = (caretXInTxtArea + txtAreaPaddingLft) - (remSize + avatarWidth + mentionNamePaddingLft);
     return {
         IsOutOfRightSideViewport: calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth),
-        rightAlignment: isMobile() ? 0 : Math.max(0, pxToTheRight)
+        rightAlignment: Math.max(0, pxToTheRight),
     };
 }
 
 export function calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth) {
-    if (isMobile()) return false;
     return (caretXInTxtArea + txtAreaOffsetLft + suggestionBoxWidth) > viewportWidth;
 }
 

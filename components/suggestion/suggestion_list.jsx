@@ -30,7 +30,7 @@ export default class SuggestionList extends React.PureComponent {
         selection: PropTypes.string.isRequired,
         components: PropTypes.array.isRequired,
         wrapperHeight: PropTypes.number,
-        suggestionBoxAlgn: PropTypes.object, // TODO use shape and fix the align name
+        suggestionBoxAlgn: PropTypes.object,
     };
 
     static defaultProps = {
@@ -225,7 +225,7 @@ export default class SuggestionList extends React.PureComponent {
 
         const contentStyle = {maxHeight};
         const boxAlignment = this.props.suggestionBoxAlgn.IsOutOfRightSideViewport ?
-            { right: 0 } : { left: this.props.suggestionBoxAlgn.rightAlignment };
+            {right: 0} : {left: this.props.suggestionBoxAlgn.rightAlignment};
 
         return (<div className={mainClass}>
             <div

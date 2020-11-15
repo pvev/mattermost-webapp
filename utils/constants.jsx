@@ -1002,6 +1002,7 @@ export const Constants = {
     TEXTAREA_PADDING_LEFT: 15,
     TEXTAREA_BORDER_WIDTH: 1,
     MENTION_NAME_PADDING_LEFT: 2.4,
+    PX_TO_ALIGN_CARET_TO_ICON: 1.5,
     AVATAR_WIDTH: 24,
     AUTO_RESPONDER: 'system_auto_responder',
     SYSTEM_MESSAGE_PROFILE_IMAGE: logoImage,

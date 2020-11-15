@@ -1121,14 +1121,14 @@ export function getCaretXYCoordinate(textArea) {
     const selection = document.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
-    const rect = range.getBoundingClientRect();
+    const rect = range.getClientRects();
     document.body.removeChild(copy);
     textArea.selectionStart = start;
     textArea.selectionEnd = end;
     textArea.focus();
     return {
-        x: Math.floor(rect.left - textArea.scrollLeft),
-        y: Math.floor(rect.top - textArea.scrollTop),
+        x: Math.floor(rect[0].left - textArea.scrollLeft),
+        y: Math.floor(rect[0].top - textArea.scrollTop),
     };
 }
 
@@ -1155,7 +1155,7 @@ export function offsetTopLeft(el) {
 }
 
 export function getSuggestionBoxAlgn(textArea) {
-    const caretXInTxtArea = getCaretXYCoordinate(textArea).x;
+    const caretXCoordinateInTxtArea = getCaretXYCoordinate(textArea).x
     const viewportWidth = getViewportSize().w;
 
     // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
@@ -1167,24 +1167,36 @@ export function getSuggestionBoxAlgn(textArea) {
     // textArea padding left of 15px defined in the _post.scss line 392 + 1px from the border
     const txtAreaPaddingLft = Constants.TEXTAREA_PADDING_LEFT + Constants.TEXTAREA_BORDER_WIDTH;
 
+    const pxToSubstract = getPixelsToSubstract();
+
+    // how many pixels to the right should be moved the suggestion box
+    const pxToTheRight = (caretXCoordinateInTxtArea + txtAreaPaddingLft) - (pxToSubstract);
+
+    // the x coordinate in the viewport of the suggestion box border-right
+    const xBoxRightCoordinate = caretXCoordinateInTxtArea + txtAreaOffsetLft + suggestionBoxWidth;
+
+    const willSuggestionBoxOverflowRight = calculateOutOfRightSide(viewportWidth, xBoxRightCoordinate);
+    return {
+        IsOutOfRightSideViewport: willSuggestionBoxOverflowRight,
+        pixelsToMove: Math.max(0, pxToTheRight),
+    };
+}
+
+function getPixelsToSubstract() {
     // mention name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
     const mentionNamePaddingLft = convertRemToPixels(Constants.MENTION_NAME_PADDING_LEFT);
 
     // half of width of avatar stated in .Avatar.Avatar-sm (24px)
     const avatarWidth = Constants.AVATAR_WIDTH / 2;
 
-    // In order to center the caret to the avatar icon, we need to substract 1.5 rem (the average at size)
-    const pxToAlignCaretToIcon = convertRemToPixels(1.5);
+    // In order to center the caret to the avatar icon, we need to substract 1.5 rem
+    const pxToAlignCaretToIcon = convertRemToPixels(Constants.PX_TO_ALIGN_CARET_TO_ICON);
 
-    const pxToTheRight = (caretXInTxtArea + txtAreaPaddingLft) - (pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft);
-    return {
-        IsOutOfRightSideViewport: calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth),
-        rightAlignment: Math.max(0, pxToTheRight),
-    };
+    return pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft;
 }
 
-export function calculateOutOfRightSide(caretXInTxtArea, viewportWidth, txtAreaOffsetLft, suggestionBoxWidth) {
-    return (caretXInTxtArea + txtAreaOffsetLft + suggestionBoxWidth) > viewportWidth;
+export function calculateOutOfRightSide(viewportWidth, xBoxRightCoordinate) {
+    return xBoxRightCoordinate > viewportWidth;
 }
 
 export function setSelectionRange(input, selectionStart, selectionEnd) {

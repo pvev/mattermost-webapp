@@ -1161,17 +1161,21 @@ describe('Utils.getViewportSize', () => {
 
 describe('Utils.offsetTopLeft', () => {
     test('offsetTopLeft returns the right offset values', () => {
-        const textArea = {
-            getBoundingClientRect: () => {
-                return {
-                    top: 50,
-                    left: 100,
-                }
-            }
-        }
+        const textArea = document.createElement('textArea')
+
+        textArea.getBoundingClientRect = jest.fn(() => ({
+        x: 851.671875,
+        y: 200.046875,
+        width: 8.34375,
+        height: 17,
+        top: 967,
+        right: 860.015625,
+        bottom: 984.046875,
+        left: 851,
+        }));
 
         const offsetTopLeft = Utils.offsetTopLeft(textArea);
-        expect(offsetTopLeft.top).toEqual(50);
-        expect(offsetTopLeft.left).toEqual(100);
+        expect(offsetTopLeft.top).toEqual(967);
+        expect(offsetTopLeft.left).toEqual(851);
     });
 });

@@ -155,6 +155,11 @@
     position: absolute;
 }
 
+.suggestion-list__content--bottom {
+    top: 0;
+    position: absolute;
+}
+
 .suggestion-list__divider {
     font-size: 1.2rem;
     color: v(center-channel-color-60);

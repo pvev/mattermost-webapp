@@ -1066,6 +1066,158 @@ export function getCaretPosition(el) {
     return 0;
 }
 
+export function createHtmlElement(el) {
+    return document.createElement(el);
+}
+
+export function getElementComputedStyle(el) {
+    return getComputedStyle(el);
+}
+
+export function addElementToDocument(el) {
+    document.body.appendChild(el);
+}
+
+export function copyTextAreaToDiv(textArea) {
+    if (!textArea) {
+        return null;
+    }
+    const copy = createHtmlElement('div');
+    copy.textContent = textArea.value;
+    const style = getElementComputedStyle(textArea);
+    [
+        'fontFamily',
+        'fontSize',
+        'fontWeight',
+        'wordWrap',
+        'whiteSpace',
+        'borderLeftWidth',
+        'borderTopWidth',
+        'borderRightWidth',
+        'borderBottomWidth',
+        'paddingRight',
+        'paddingLeft',
+    ].forEach((key) => {
+        copy.style[key] = style[key];
+    });
+    copy.style.overflow = 'auto';
+    copy.style.width = textArea.offsetWidth + 'px';
+    copy.style.height = textArea.offsetHeight + 'px';
+    copy.style.position = 'absolute';
+    copy.style.left = textArea.offsetLeft + 'px';
+    copy.style.top = textArea.offsetTop + 'px';
+    addElementToDocument(copy);
+    return copy;
+}
+
+export function convertRemToPixels(rem) {
+    if (isNaN(rem)) {
+        return 0;
+    }
+    const styles = getElementComputedStyle(document.documentElement);
+    return rem * parseFloat(styles.fontSize);
+}
+
+export function getCaretXYCoordinate(textArea) {
+    if (!textArea) {
+        return {x: 0, y: 0};
+    }
+    const start = textArea.selectionStart;
+    const end = textArea.selectionEnd;
+    const copy = copyTextAreaToDiv(textArea);
+    const range = document.createRange();
+    range.setStart(copy.firstChild, start);
+    range.setEnd(copy.firstChild, end);
+    const selection = document.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    const rect = range.getClientRects();
+    document.body.removeChild(copy);
+    textArea.selectionStart = start;
+    textArea.selectionEnd = end;
+    textArea.focus();
+    return {
+        x: Math.floor(rect[0].left - textArea.scrollLeft),
+        y: Math.floor(rect[0].top - textArea.scrollTop),
+    };
+}
+
+export function getViewportSize(win) {
+    const w = win || window;
+
+    if (w.innerWidth != null) {
+        return {w: w.innerWidth, h: w.innerHeight};
+    }
+
+    const d = w.document;
+    if (d.compatMode === 'CSS1Compat') {
+        return {w: d.documentElement.clientWidth,
+            h: d.documentElement.clientHeight};
+    }
+    return {w: d.body.clientWidth, h: d.body.clientHeight};
+}
+
+export function offsetTopLeft(el) {
+    if (!(el instanceof HTMLElement)) {
+        return {top: 0, left: 0};
+    }
+    const rect = el.getBoundingClientRect();
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return {top: rect.top + scrollTop, left: rect.left + scrollLeft};
+}
+
+export function getSuggestionBoxAlgn(textArea) {
+    if (!textArea || !(textArea instanceof HTMLElement)) {
+        return {
+            IsOutOfRightSideViewport: false,
+            pixelsToMove: 0,
+        };
+    }
+    const caretXCoordinateInTxtArea = getCaretXYCoordinate(textArea).x;
+    const viewportWidth = getViewportSize().w;
+
+    // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
+    const suggestionBoxWidth = Constants.SUGGESTION_LIST_MODAL_WIDTH;
+
+    // value in pixels for the offsetLeft for the textArea
+    const txtAreaOffsetLft = offsetTopLeft(textArea).left;
+
+    // textArea padding left of 15px defined in the _post.scss line 392 + 1px from the border
+    const txtAreaPaddingLft = Constants.TEXTAREA_PADDING_LEFT + Constants.TEXTAREA_BORDER_WIDTH;
+
+    const pxToSubstract = getPixelsToSubstract();
+
+    // how many pixels to the right should be moved the suggestion box
+    const pxToTheRight = (caretXCoordinateInTxtArea + txtAreaPaddingLft) - (pxToSubstract);
+
+    // the x coordinate in the viewport of the suggestion box border-right
+    const xBoxRightCoordinate = caretXCoordinateInTxtArea + txtAreaOffsetLft + suggestionBoxWidth;
+
+    const willSuggestionBoxOverflowRight = isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate);
+    return {
+        IsOutOfRightSideViewport: willSuggestionBoxOverflowRight,
+        pixelsToMove: Math.max(0, Math.floor(pxToTheRight)),
+    };
+}
+
+export function getPixelsToSubstract() {
+    // mention name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
+    const mentionNamePaddingLft = convertRemToPixels(Constants.MENTION_NAME_PADDING_LEFT);
+
+    // half of width of avatar stated in .Avatar.Avatar-sm (24px)
+    const avatarWidth = Constants.AVATAR_WIDTH / 2;
+
+    // In order to center the caret to the avatar icon, we need to substract 1.5 rem
+    const pxToAlignCaretToIcon = convertRemToPixels(Constants.PX_TO_ALIGN_CARET_TO_ICON);
+
+    return pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft;
+}
+
+export function isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate) {
+    return xBoxRightCoordinate > viewportWidth;
+}
+
 export function setSelectionRange(input, selectionStart, selectionEnd) {
     if (input.setSelectionRange) {
         input.focus();

@@ -1037,46 +1037,44 @@ describe('Utils.copyTextAreaToDiv', () => {
 
         const copy = Utils.copyTextAreaToDiv(textArea);
 
-        expect(copy.nodeName).toEqual("DIV");
+        expect(copy.nodeName).toEqual('DIV');
     });
 
     test('copyTextAreaToDiv copies the content into the div element', () => {
         const textArea = document.createElement('textarea');
-        textArea.value= "the content";
+        textArea.value = 'the content';
 
         const copy = Utils.copyTextAreaToDiv(textArea);
 
-        expect(copy.innerHTML).toEqual("the content");
+        expect(copy.innerHTML).toEqual('the content');
     });
 
     test('copyTextAreaToDiv correctly copies the styles of the textArea element', () => {
         const textArea = document.createElement('textarea');
-        textArea.style['fontFamily'] = "Sans-serif";
+        textArea.style.fontFamily = 'Sans-serif';
 
         const copy = Utils.copyTextAreaToDiv(textArea);
 
-        expect(copy.style["fontFamily"]).toEqual("Sans-serif");
+        expect(copy.style.fontFamily).toEqual('Sans-serif');
     });
-
 });
 
 describe('Utils.getCaretXYCoordinate', () => {
-
     test('getCaretXYCoordinate returns the coordinates of the caret', () => {
         const textArea = document.createElement('textarea');
         document.createRange = () => {
             const range = new Range();
-                    
+
             range.getClientRects = () => {
-              return [{
-                top: 10,
-                left: 15
-              }];
+                return [{
+                    top: 10,
+                    left: 15,
+                }];
             };
-          
+
             return range;
-          }
-        textArea.value= "m".repeat(10);
+        };
+        textArea.value = 'm'.repeat(10);
 
         const coordinates = Utils.getCaretXYCoordinate(textArea);
 
@@ -1084,24 +1082,23 @@ describe('Utils.getCaretXYCoordinate', () => {
         expect(coordinates.y).toEqual(10);
 
         document.createRange = undefined;
-
     });
 
     test('getCaretXYCoordinate returns the coordinates of the caret with a left scroll', () => {
         const textArea = document.createElement('textarea');
         document.createRange = () => {
             const range = new Range();
-                    
+
             range.getClientRects = () => {
-              return [{
-                top: 10,
-                left: 15
-              }];
+                return [{
+                    top: 10,
+                    left: 15,
+                }];
             };
-          
+
             return range;
-          }
-        textArea.value= "m".repeat(10);
+        };
+        textArea.value = 'm'.repeat(10);
         textArea.scrollLeft = 5;
 
         const coordinates = Utils.getCaretXYCoordinate(textArea);
@@ -1109,9 +1106,7 @@ describe('Utils.getCaretXYCoordinate', () => {
         expect(coordinates.x).toEqual(10);
 
         document.createRange = undefined;
-
     });
-
 });
 
 describe('Utils.getViewportSize', () => {
@@ -1124,7 +1119,7 @@ describe('Utils.getViewportSize', () => {
     });
 
     test('getViewportSize returns the right viewport width with custom parameter', () => {
-        const mockWindow = {document: { body: {}, compatMode: undefined}};
+        const mockWindow = {document: {body: {}, compatMode: undefined}};
         mockWindow.document.body.clientWidth = 1025;
         mockWindow.document.body.clientHeight = 860;
 
@@ -1132,7 +1127,6 @@ describe('Utils.getViewportSize', () => {
 
         expect(viewportDimensions.w).toEqual(1025);
         expect(viewportDimensions.h).toEqual(860);
-
     });
 
     test('getViewportSize returns the right viewport width with custom parameter - innerWidth', () => {
@@ -1142,11 +1136,10 @@ describe('Utils.getViewportSize', () => {
 
         expect(viewportDimensions.w).toEqual(1027);
         expect(viewportDimensions.h).toEqual(767);
-
     });
 
     test('getViewportSize returns the right viewport width with custom parameter - CSS1Compat', () => {
-        const mockWindow = {document: { documentElement: {}, compatMode: "CSS1Compat"}};
+        const mockWindow = {document: {documentElement: {}, compatMode: 'CSS1Compat'}};
         mockWindow.document.documentElement.clientWidth = 1023;
         mockWindow.document.documentElement.clientHeight = 861;
 
@@ -1154,24 +1147,22 @@ describe('Utils.getViewportSize', () => {
 
         expect(viewportDimensions.w).toEqual(1023);
         expect(viewportDimensions.h).toEqual(861);
-
     });
-
 });
 
 describe('Utils.offsetTopLeft', () => {
     test('offsetTopLeft returns the right offset values', () => {
-        const textArea = document.createElement('textArea')
+        const textArea = document.createElement('textArea');
 
         textArea.getBoundingClientRect = jest.fn(() => ({
-        x: 851.671875,
-        y: 200.046875,
-        width: 8.34375,
-        height: 17,
-        top: 967,
-        right: 860.015625,
-        bottom: 984.046875,
-        left: 851,
+            x: 851.671875,
+            y: 200.046875,
+            width: 8.34375,
+            height: 17,
+            top: 967,
+            right: 860.015625,
+            bottom: 984.046875,
+            left: 851,
         }));
 
         const offsetTopLeft = Utils.offsetTopLeft(textArea);
@@ -1197,16 +1188,16 @@ describe('Utils.getSuggestionBoxAlgn', () => {
             const range = new Range();
             const smallTextSize = 15;
             range.getClientRects = () => {
-              return [{
-                top: 10,
-                left: smallTextSize
-              }];
+                return [{
+                    top: 10,
+                    left: smallTextSize,
+                }];
             };
-          
-            return range;
-        }
 
-        textArea.value = "asdf";
+            return range;
+        };
+
+        textArea.value = 'asdf';
 
         const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
         expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(false);
@@ -1229,16 +1220,16 @@ describe('Utils.getSuggestionBoxAlgn', () => {
             const range = new Range();
             const mediumTextSize = 105;
             range.getClientRects = () => {
-              return [{
-                top: 10,
-                left: mediumTextSize
-              }];
+                return [{
+                    top: 10,
+                    left: mediumTextSize,
+                }];
             };
-          
-            return range;
-        }
 
-        textArea.value = "asdf";
+            return range;
+        };
+
+        textArea.value = 'asdf';
 
         const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
         expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(false);
@@ -1261,16 +1252,16 @@ describe('Utils.getSuggestionBoxAlgn', () => {
             const range = new Range();
             const mediumTextSize = 805;
             range.getClientRects = () => {
-              return [{
-                top: 10,
-                left: mediumTextSize
-              }];
+                return [{
+                    top: 10,
+                    left: mediumTextSize,
+                }];
             };
-          
-            return range;
-        }
 
-        textArea.value = "asdf";
+            return range;
+        };
+
+        textArea.value = 'asdf';
 
         const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
         expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(true);

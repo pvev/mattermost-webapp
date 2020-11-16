@@ -1066,7 +1066,7 @@ export function getCaretPosition(el) {
     return 0;
 }
 
-export function createDocumentElement(el) {
+export function createHtmlElement(el) {
     return document.createElement(el);
 }
 
@@ -1082,7 +1082,7 @@ export function copyTextAreaToDiv(textArea) {
     if (!textArea) {
         return null;
     }
-    const copy = createDocumentElement('div');
+    const copy = createHtmlElement('div');
     copy.textContent = textArea.value;
     const style = getElementComputedStyle(textArea);
     [
@@ -1194,7 +1194,7 @@ export function getSuggestionBoxAlgn(textArea) {
     // the x coordinate in the viewport of the suggestion box border-right
     const xBoxRightCoordinate = caretXCoordinateInTxtArea + txtAreaOffsetLft + suggestionBoxWidth;
 
-    const willSuggestionBoxOverflowRight = calculateOutOfRightSide(viewportWidth, xBoxRightCoordinate);
+    const willSuggestionBoxOverflowRight = isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate);
     return {
         IsOutOfRightSideViewport: willSuggestionBoxOverflowRight,
         pixelsToMove: Math.max(0, Math.floor(pxToTheRight)),
@@ -1214,7 +1214,7 @@ export function getPixelsToSubstract() {
     return pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft;
 }
 
-export function calculateOutOfRightSide(viewportWidth, xBoxRightCoordinate) {
+export function isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate) {
     return xBoxRightCoordinate > viewportWidth;
 }
 

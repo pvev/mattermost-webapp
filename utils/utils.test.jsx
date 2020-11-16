@@ -1032,16 +1032,15 @@ describe('Utils.adjustSelection', () => {
 });
 
 describe('Utils.copyTextAreaToDiv', () => {
-    test('copyTextAreaToDiv actually creates a div element', () => {
-        const textArea = document.createElement('textarea');
+    const textArea = document.createElement('textarea');
 
+    test('copyTextAreaToDiv actually creates a div element', () => {
         const copy = Utils.copyTextAreaToDiv(textArea);
 
         expect(copy.nodeName).toEqual('DIV');
     });
 
     test('copyTextAreaToDiv copies the content into the div element', () => {
-        const textArea = document.createElement('textarea');
         textArea.value = 'the content';
 
         const copy = Utils.copyTextAreaToDiv(textArea);
@@ -1050,7 +1049,6 @@ describe('Utils.copyTextAreaToDiv', () => {
     });
 
     test('copyTextAreaToDiv correctly copies the styles of the textArea element', () => {
-        const textArea = document.createElement('textarea');
         textArea.style.fontFamily = 'Sans-serif';
 
         const copy = Utils.copyTextAreaToDiv(textArea);
@@ -1060,52 +1058,40 @@ describe('Utils.copyTextAreaToDiv', () => {
 });
 
 describe('Utils.getCaretXYCoordinate', () => {
-    test('getCaretXYCoordinate returns the coordinates of the caret', () => {
-        const textArea = document.createElement('textarea');
-        document.createRange = () => {
-            const range = new Range();
+    const cleanUp = () => {
+        document.createRange = undefined;
+    };
 
-            range.getClientRects = () => {
-                return [{
-                    top: 10,
-                    left: 15,
-                }];
-            };
+    afterAll(cleanUp);
 
-            return range;
+    const textArea = document.createElement('textarea');
+    document.createRange = () => {
+        const range = new Range();
+
+        range.getClientRects = () => {
+            return [{
+                top: 10,
+                left: 15,
+            }];
         };
-        textArea.value = 'm'.repeat(10);
 
+        return range;
+    };
+    textArea.value = 'm'.repeat(10);
+
+    test('getCaretXYCoordinate returns the coordinates of the caret', () => {
         const coordinates = Utils.getCaretXYCoordinate(textArea);
 
         expect(coordinates.x).toEqual(15);
         expect(coordinates.y).toEqual(10);
-
-        document.createRange = undefined;
     });
 
     test('getCaretXYCoordinate returns the coordinates of the caret with a left scroll', () => {
-        const textArea = document.createElement('textarea');
-        document.createRange = () => {
-            const range = new Range();
-
-            range.getClientRects = () => {
-                return [{
-                    top: 10,
-                    left: 15,
-                }];
-            };
-
-            return range;
-        };
-        textArea.value = 'm'.repeat(10);
         textArea.scrollLeft = 5;
 
         const coordinates = Utils.getCaretXYCoordinate(textArea);
 
         expect(coordinates.x).toEqual(10);
-
-        document.createRange = undefined;
     });
 });
 
@@ -1155,13 +1141,7 @@ describe('Utils.offsetTopLeft', () => {
         const textArea = document.createElement('textArea');
 
         textArea.getBoundingClientRect = jest.fn(() => ({
-            x: 851.671875,
-            y: 200.046875,
-            width: 8.34375,
-            height: 17,
             top: 967,
-            right: 860.015625,
-            bottom: 984.046875,
             left: 851,
         }));
 
@@ -1172,97 +1152,51 @@ describe('Utils.offsetTopLeft', () => {
 });
 
 describe('Utils.getSuggestionBoxAlgn', () => {
-    test('getSuggestionBoxAlgn returns 0 (box stuck to left) when the length of the text is small', () => {
-        const textArea = document.createElement('textArea');
+    const cleanUp = () => {
+        document.createRange = undefined;
+    };
 
-        textArea.getBoundingClientRect = jest.fn(() => ({
-            x: 80,
-            y: 20,
-            top: 20,
-            right: 85,
-            bottom: 90,
-            left: 85,
-        }));
+    afterAll(cleanUp);
 
+    const textArea = document.createElement('textArea');
+    textArea.value = 'asdf';
+
+    textArea.getBoundingClientRect = jest.fn(() => ({
+        left: 85,
+    }));
+
+    const createRange = (size) => {
         document.createRange = () => {
             const range = new Range();
-            const smallTextSize = 15;
             range.getClientRects = () => {
                 return [{
                     top: 10,
-                    left: smallTextSize,
+                    left: size,
                 }];
             };
-
             return range;
         };
+    };
 
-        textArea.value = 'asdf';
-
+    test('getSuggestionBoxAlgn returns 0 (box stuck to left) when the length of the text is small', () => {
+        const smallSizeText = 15;
+        createRange(smallSizeText);
         const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
         expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(false);
         expect(suggestionBoxAlgn.pixelsToMove).toEqual(0);
     });
 
     test('getSuggestionBoxAlgn returns pixels to move when text is medium size', () => {
-        const textArea = document.createElement('textArea');
-
-        textArea.getBoundingClientRect = jest.fn(() => ({
-            x: 80,
-            y: 20,
-            top: 20,
-            right: 85,
-            bottom: 90,
-            left: 85,
-        }));
-
-        document.createRange = () => {
-            const range = new Range();
-            const mediumTextSize = 105;
-            range.getClientRects = () => {
-                return [{
-                    top: 10,
-                    left: mediumTextSize,
-                }];
-            };
-
-            return range;
-        };
-
-        textArea.value = 'asdf';
-
+        const mediumSizeText = 105;
+        createRange(mediumSizeText);
         const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
         expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(false);
         expect(suggestionBoxAlgn.pixelsToMove).toEqual(62);
     });
 
     test('getSuggestionBoxAlgn returns IsOutOfRightSideViewport true when text is large size', () => {
-        const textArea = document.createElement('textArea');
-
-        textArea.getBoundingClientRect = jest.fn(() => ({
-            x: 80,
-            y: 20,
-            top: 20,
-            right: 85,
-            bottom: 90,
-            left: 85,
-        }));
-
-        document.createRange = () => {
-            const range = new Range();
-            const mediumTextSize = 805;
-            range.getClientRects = () => {
-                return [{
-                    top: 10,
-                    left: mediumTextSize,
-                }];
-            };
-
-            return range;
-        };
-
-        textArea.value = 'asdf';
-
+        const largeSizeText = 805;
+        createRange(largeSizeText);
         const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
         expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(true);
     });

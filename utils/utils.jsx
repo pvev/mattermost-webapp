@@ -1079,6 +1079,9 @@ export function addElementToDocument(el) {
 }
 
 export function copyTextAreaToDiv(textArea) {
+    if (!textArea) {
+        return null;
+    }
     const copy = createDocumentElement('div');
     copy.textContent = textArea.value;
     const style = getElementComputedStyle(textArea);
@@ -1108,10 +1111,17 @@ export function copyTextAreaToDiv(textArea) {
 }
 
 export function convertRemToPixels(rem) {
-    return rem * parseFloat(getElementComputedStyle(document.documentElement).fontSize);
+    if (isNaN(rem)) {
+        return 0;
+    }
+    const styles = getElementComputedStyle(document.documentElement);
+    return rem * parseFloat(styles.fontSize);
 }
 
 export function getCaretXYCoordinate(textArea) {
+    if (!textArea) {
+        return { x: 0, y: 0 };
+    }
     const start = textArea.selectionStart;
     const end = textArea.selectionEnd;
     const copy = copyTextAreaToDiv(textArea);
@@ -1148,6 +1158,10 @@ export function getViewportSize(win) {
 }
 
 export function offsetTopLeft(el) {
+    if (!el instanceof HTMLElement) {
+        console.error("el should be a valid HTML Element");
+        return {top: 0, left: 0};
+    }
     const rect = el.getBoundingClientRect();
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -1155,6 +1169,12 @@ export function offsetTopLeft(el) {
 }
 
 export function getSuggestionBoxAlgn(textArea) {
+    if (!textArea || !(textArea instanceof HTMLElement)) {
+        return {
+            IsOutOfRightSideViewport: false,
+            pixelsToMove: 0,
+        }
+    }
     const caretXCoordinateInTxtArea = getCaretXYCoordinate(textArea).x
     const viewportWidth = getViewportSize().w;
 
@@ -1178,11 +1198,11 @@ export function getSuggestionBoxAlgn(textArea) {
     const willSuggestionBoxOverflowRight = calculateOutOfRightSide(viewportWidth, xBoxRightCoordinate);
     return {
         IsOutOfRightSideViewport: willSuggestionBoxOverflowRight,
-        pixelsToMove: Math.max(0, pxToTheRight),
+        pixelsToMove: Math.max(0, Math.floor(pxToTheRight)),
     };
 }
 
-function getPixelsToSubstract() {
+export function getPixelsToSubstract() {
     // mention name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
     const mentionNamePaddingLft = convertRemToPixels(Constants.MENTION_NAME_PADDING_LEFT);
 

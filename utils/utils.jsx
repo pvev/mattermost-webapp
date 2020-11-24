@@ -1097,7 +1097,7 @@ export function copyTextAreaToDiv(textArea) {
         'borderBottomWidth',
         'paddingRight',
         'paddingLeft',
-        'paddingTop'
+        'paddingTop',
     ].forEach((key) => {
         copy.style[key] = style[key];
     });
@@ -1150,12 +1150,9 @@ export function getViewportSize(win) {
         return {w: w.innerWidth, h: w.innerHeight};
     }
 
-    const d = w.document;
-    if (d.compatMode === 'CSS1Compat') {
-        return {w: d.documentElement.clientWidth,
-            h: d.documentElement.clientHeight};
-    }
-    return {w: d.body.clientWidth, h: d.body.clientHeight};
+    const {clientWidth, clientHeight} = w.document.body;
+
+    return {w: clientWidth, h: clientHeight};
 }
 
 export function offsetTopLeft(el) {
@@ -1186,25 +1183,31 @@ export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0, boxLocation = 
     // value in pixels for the offsetLeft for the textArea
     const txtAreaOffsetLft = offsetTopLeft(textArea).left;
 
-    // textArea padding left of 15px defined in the _post.scss line 392 + 1px from the border
-    const txtAreaPaddingLft = Constants.TEXTAREA_PADDING_LEFT + Constants.TEXTAREA_BORDER_WIDTH;
-
     // how many pixels to the right should be moved the suggestion box
-    let pxToTheRight = (caretXCoordinateInTxtArea + txtAreaPaddingLft) - (pxToSubstract);
+    let pxToTheRight = (caretXCoordinateInTxtArea) - (pxToSubstract);
 
     // the x coordinate in the viewport of the suggestion box border-right
     const xBoxRightCoordinate = caretXCoordinateInTxtArea + txtAreaOffsetLft + suggestionBoxWidth;
+
+    const txtAreaLineHeight = Number(getComputedStyle(textArea)?.lineHeight.replace('px', ''));
 
     if (isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate)) {
         pxToTheRight = textArea.offsetWidth - suggestionBoxWidth;
     }
 
-    if ('bottom' === boxLocation) {
-        caretYCoordinateInTxtArea += +getComputedStyle(textArea)?.lineHeight.replace('px', '');
+    if (boxLocation === 'bottom') {
+        caretYCoordinateInTxtArea += txtAreaLineHeight;
+
+        // if the suggestion box was invoked from the last line in the post box
+        if (caretYCoordinateInTxtArea >= (textArea.offsetHeight - txtAreaLineHeight)) {
+            caretYCoordinateInTxtArea = textArea.offsetHeight;
+        }
     }
     return {
         pixelsToMoveX: Math.max(0, Math.round(pxToTheRight)),
-        pixelsToMoveY: Math.round(caretYCoordinateInTxtArea),
+
+        // the condition verifies if the suggestion was invoked from the first line, then set the y to 0
+        pixelsToMoveY: Math.round(caretYCoordinateInTxtArea > txtAreaLineHeight ? caretYCoordinateInTxtArea : 0),
     };
 }
 
@@ -1213,9 +1216,9 @@ export function getPixelsToSubstract() {
     const mentionNamePaddingLft = convertRemToPixels(Constants.MENTION_NAME_PADDING_LEFT);
 
     // half of width of avatar stated in .Avatar.Avatar-sm (24px)
-    const avatarWidth = Constants.AVATAR_WIDTH / 2;
+    const avatarWidth = Constants.AVATAR_WIDTH * 0.5;
 
-    // In order to center the caret to the avatar icon, we need to substract 1.5 rem
+    // In order to center the caret to the avatar icon, we need to substract 0.5 rem
     const pxToAlignCaretToIcon = convertRemToPixels(Constants.PX_TO_ALIGN_CARET_TO_ICON);
 
     return pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft;

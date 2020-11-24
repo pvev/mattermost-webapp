@@ -1123,17 +1123,6 @@ describe('Utils.getViewportSize', () => {
         expect(viewportDimensions.w).toEqual(1027);
         expect(viewportDimensions.h).toEqual(767);
     });
-
-    test('getViewportSize returns the right viewport width with custom parameter - CSS1Compat', () => {
-        const mockWindow = {document: {documentElement: {}, compatMode: 'CSS1Compat'}};
-        mockWindow.document.documentElement.clientWidth = 1023;
-        mockWindow.document.documentElement.clientHeight = 861;
-
-        const viewportDimensions = Utils.getViewportSize(mockWindow);
-
-        expect(viewportDimensions.w).toEqual(1023);
-        expect(viewportDimensions.h).toEqual(861);
-    });
 });
 
 describe('Utils.offsetTopLeft', () => {
@@ -1159,10 +1148,14 @@ describe('Utils.getSuggestionBoxAlgn', () => {
     afterAll(cleanUp);
 
     const textArea = document.createElement('textArea');
-    textArea.value = 'asdf';
+
+    textArea.value = 'a'.repeat(30);
+
+    jest.spyOn(textArea, 'offsetWidth', 'get').
+        mockImplementation(() => 950);
 
     textArea.getBoundingClientRect = jest.fn(() => ({
-        left: 85,
+        left: 50,
     }));
 
     const createRange = (size) => {
@@ -1170,7 +1163,7 @@ describe('Utils.getSuggestionBoxAlgn', () => {
             const range = new Range();
             range.getClientRects = () => {
                 return [{
-                    top: 10,
+                    top: 100,
                     left: size,
                 }];
             };
@@ -1178,26 +1171,27 @@ describe('Utils.getSuggestionBoxAlgn', () => {
         };
     };
 
+    const fixedToTheRight = textArea.offsetWidth - Constants.SUGGESTION_LIST_MODAL_WIDTH;
+
     test('getSuggestionBoxAlgn returns 0 (box stuck to left) when the length of the text is small', () => {
         const smallSizeText = 15;
         createRange(smallSizeText);
-        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
-        expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(false);
-        expect(suggestionBoxAlgn.pixelsToMove).toEqual(0);
+        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPixelsToSubstract());
+        expect(suggestionBoxAlgn.pixelsToMoveX).toEqual(0);
     });
 
     test('getSuggestionBoxAlgn returns pixels to move when text is medium size', () => {
-        const mediumSizeText = 105;
+        const mediumSizeText = 155;
         createRange(mediumSizeText);
-        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
-        expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(false);
-        expect(suggestionBoxAlgn.pixelsToMove).toEqual(62);
+        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPixelsToSubstract());
+        expect(suggestionBoxAlgn.pixelsToMoveX).toBeGreaterThan(0);
+        expect(suggestionBoxAlgn.pixelsToMoveX).not.toBe(fixedToTheRight);
     });
 
-    test('getSuggestionBoxAlgn returns IsOutOfRightSideViewport true when text is large size', () => {
-        const largeSizeText = 805;
+    test('getSuggestionBoxAlgn align box to the righ when text is large size', () => {
+        const largeSizeText = 700;
         createRange(largeSizeText);
-        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea);
-        expect(suggestionBoxAlgn.IsOutOfRightSideViewport).toEqual(true);
+        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPixelsToSubstract());
+        expect(fixedToTheRight).toEqual(suggestionBoxAlgn.pixelsToMoveX);
     });
 });

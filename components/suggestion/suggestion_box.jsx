@@ -657,7 +657,7 @@ export default class SuggestionBox extends React.PureComponent {
 
             if (handled) {
                 // get the alignment for the box and set it in the component state
-                const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(this.getTextbox(), Utils.getPixelsToSubstract());
+                const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(this.getTextbox(), Utils.getPixelsToSubstract(), this.props.listStyle);
                 this.setState({
                     presentationType: provider.presentationType(),
                     allowDividers: provider.allowDividers(),

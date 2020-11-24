@@ -1097,6 +1097,7 @@ export function copyTextAreaToDiv(textArea) {
         'borderBottomWidth',
         'paddingRight',
         'paddingLeft',
+        'paddingTop'
     ].forEach((key) => {
         copy.style[key] = style[key];
     });
@@ -1167,7 +1168,7 @@ export function offsetTopLeft(el) {
     return {top: rect.top + scrollTop, left: rect.left + scrollLeft};
 }
 
-export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0) {
+export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0, boxLocation = 'top') {
     if (!textArea || !(textArea instanceof HTMLElement)) {
         return {
             pixelsToMoveX: 0,
@@ -1175,7 +1176,8 @@ export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0) {
         };
     }
     const caretXCoordinateInTxtArea = getCaretXYCoordinate(textArea).x;
-    const caretYCoordinateInTxtArea = getCaretXYCoordinate(textArea).y;
+    let caretYCoordinateInTxtArea = getCaretXYCoordinate(textArea).y;
+
     const viewportWidth = getViewportSize().w;
 
     // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
@@ -1195,6 +1197,10 @@ export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0) {
 
     if (isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate)) {
         pxToTheRight = textArea.offsetWidth - suggestionBoxWidth;
+    }
+
+    if ('bottom' === boxLocation) {
+        caretYCoordinateInTxtArea += +getComputedStyle(textArea)?.lineHeight.replace('px', '');
     }
     return {
         pixelsToMoveX: Math.max(0, Math.round(pxToTheRight)),

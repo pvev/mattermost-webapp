@@ -224,8 +224,8 @@ export default class SuggestionList extends React.PureComponent {
         }
 
         const contentStyle = {maxHeight};
-        const boxAlignment = this.props.suggestionBoxAlgn.IsOutOfRightSideViewport ?
-            {right: 0} : {left: this.props.suggestionBoxAlgn.pixelsToMove};
+        const {pixelsToMoveX, pixelsToMoveY} = this.props.suggestionBoxAlgn;
+        const boxAlignment = {transform: `translate(${pixelsToMoveX}px, ${pixelsToMoveY}px)`};
 
         return (<div className={mainClass}>
             <div

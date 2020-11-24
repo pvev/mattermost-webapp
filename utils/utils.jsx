@@ -1167,14 +1167,15 @@ export function offsetTopLeft(el) {
     return {top: rect.top + scrollTop, left: rect.left + scrollLeft};
 }
 
-export function getSuggestionBoxAlgn(textArea) {
+export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0) {
     if (!textArea || !(textArea instanceof HTMLElement)) {
         return {
-            IsOutOfRightSideViewport: false,
-            pixelsToMove: 0,
+            pixelsToMoveX: 0,
+            pixelsToMoveY: 0,
         };
     }
     const caretXCoordinateInTxtArea = getCaretXYCoordinate(textArea).x;
+    const caretYCoordinateInTxtArea = getCaretXYCoordinate(textArea).y;
     const viewportWidth = getViewportSize().w;
 
     // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
@@ -1186,18 +1187,18 @@ export function getSuggestionBoxAlgn(textArea) {
     // textArea padding left of 15px defined in the _post.scss line 392 + 1px from the border
     const txtAreaPaddingLft = Constants.TEXTAREA_PADDING_LEFT + Constants.TEXTAREA_BORDER_WIDTH;
 
-    const pxToSubstract = getPixelsToSubstract();
-
     // how many pixels to the right should be moved the suggestion box
-    const pxToTheRight = (caretXCoordinateInTxtArea + txtAreaPaddingLft) - (pxToSubstract);
+    let pxToTheRight = (caretXCoordinateInTxtArea + txtAreaPaddingLft) - (pxToSubstract);
 
     // the x coordinate in the viewport of the suggestion box border-right
     const xBoxRightCoordinate = caretXCoordinateInTxtArea + txtAreaOffsetLft + suggestionBoxWidth;
 
-    const willSuggestionBoxOverflowRight = isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate);
+    if (isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate)) {
+        pxToTheRight = textArea.offsetWidth - suggestionBoxWidth;
+    }
     return {
-        IsOutOfRightSideViewport: willSuggestionBoxOverflowRight,
-        pixelsToMove: Math.max(0, Math.floor(pxToTheRight)),
+        pixelsToMoveX: Math.max(0, Math.round(pxToTheRight)),
+        pixelsToMoveY: Math.round(caretYCoordinateInTxtArea),
     };
 }
 

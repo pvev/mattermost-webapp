@@ -1176,14 +1176,14 @@ describe('Utils.getSuggestionBoxAlgn', () => {
     test('getSuggestionBoxAlgn returns 0 (box stuck to left) when the length of the text is small', () => {
         const smallSizeText = 15;
         createRange(smallSizeText);
-        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPixelsToSubstract());
+        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPxToSubstract());
         expect(suggestionBoxAlgn.pixelsToMoveX).toEqual(0);
     });
 
     test('getSuggestionBoxAlgn returns pixels to move when text is medium size', () => {
         const mediumSizeText = 155;
         createRange(mediumSizeText);
-        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPixelsToSubstract());
+        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPxToSubstract());
         expect(suggestionBoxAlgn.pixelsToMoveX).toBeGreaterThan(0);
         expect(suggestionBoxAlgn.pixelsToMoveX).not.toBe(fixedToTheRight);
     });
@@ -1191,7 +1191,7 @@ describe('Utils.getSuggestionBoxAlgn', () => {
     test('getSuggestionBoxAlgn align box to the righ when text is large size', () => {
         const largeSizeText = 700;
         createRange(largeSizeText);
-        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPixelsToSubstract());
+        const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(textArea, Utils.getPxToSubstract());
         expect(fixedToTheRight).toEqual(suggestionBoxAlgn.pixelsToMoveX);
     });
 });

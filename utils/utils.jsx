@@ -1111,12 +1111,12 @@ export function copyTextAreaToDiv(textArea) {
     return copy;
 }
 
-export function convertRemToPixels(rem) {
-    if (isNaN(rem)) {
+export function convertEmToPixels(el, remNum) {
+    if (isNaN(remNum)) {
         return 0;
     }
-    const styles = getElementComputedStyle(document.documentElement);
-    return rem * parseFloat(styles.fontSize);
+    const styles = getElementComputedStyle(el);
+    return remNum * parseFloat(styles.fontSize);
 }
 
 export function getCaretXYCoordinate(textArea) {
@@ -1200,28 +1200,40 @@ export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0, boxLocation = 
 
         // if the suggestion box was invoked from the last line in the post box
         if (caretYCoordinateInTxtArea >= (textArea.offsetHeight - txtAreaLineHeight)) {
+            // stick the suggestion box to the base of the post box
             caretYCoordinateInTxtArea = textArea.offsetHeight;
         }
     }
     return {
         pixelsToMoveX: Math.max(0, Math.round(pxToTheRight)),
 
-        // the condition verifies if the suggestion was invoked from the first line, then set the y to 0
+        // if the suggestion box was invoked from the first line in the post box, stick to the top of the post box
         pixelsToMoveY: Math.round(caretYCoordinateInTxtArea > txtAreaLineHeight ? caretYCoordinateInTxtArea : 0),
     };
 }
 
-export function getPixelsToSubstract() {
+export function getPxToSubstract(char = '@') {
+    // depending on the triggering character different values must be substracted
+    if (char === '@') {
     // mention name padding-left 2.4rem as stated in suggestion-list__content .mentions__name
-    const mentionNamePaddingLft = convertRemToPixels(Constants.MENTION_NAME_PADDING_LEFT);
+        const mentionNamePaddingLft = convertEmToPixels(document.documentElement, Constants.MENTION_NAME_PADDING_LEFT);
 
-    // half of width of avatar stated in .Avatar.Avatar-sm (24px)
-    const avatarWidth = Constants.AVATAR_WIDTH * 0.5;
+        // half of width of avatar stated in .Avatar.Avatar-sm (24px)
+        const avatarWidth = Constants.AVATAR_WIDTH * 0.5;
+        return 5 + avatarWidth + mentionNamePaddingLft;
+    } else if (char === '~') {
+        return 39;
+    } else if (char === ':') {
+        return 32;
+    }
+    return 0;
+}
 
-    // In order to center the caret to the avatar icon, we need to substract 0.5 rem
-    const pxToAlignCaretToIcon = convertRemToPixels(Constants.PX_TO_ALIGN_CARET_TO_ICON);
-
-    return pxToAlignCaretToIcon + avatarWidth + mentionNamePaddingLft;
+export function getTriggerChar(pretext) {
+    if (!pretext || typeof pretext !== 'string') {
+        return '@';
+    }
+    return pretext.split(' ').pop()[0];
 }
 
 export function isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate) {

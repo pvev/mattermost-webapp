@@ -544,6 +544,7 @@ export default class SuggestionBox extends React.PureComponent {
                 items: [],
                 components: [],
                 selection: '',
+                suggestionBoxAlgn: {}
             });
             this.handlePretextChanged('');
         }
@@ -656,15 +657,20 @@ export default class SuggestionBox extends React.PureComponent {
             handled = provider.handlePretextChanged(pretext, callback) || handled;
 
             if (handled) {
-                const char = Utils.getTriggerChar(pretext);
-                const pxToSubstract = Utils.getPxToSubstract(char);
+                if (this.state.suggestionBoxAlgn.pixelsToMoveX === undefined) {
+                    const char = Utils.getTriggerChar(pretext);
+                    const pxToSubstract = Utils.getPxToSubstract(char);
+    
+                    // get the alignment for the box and set it in the component state
+                    const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(this.getTextbox(), pxToSubstract, this.props.listStyle);
+                    this.setState({
+                        suggestionBoxAlgn,
+                    });
+                }
 
-                // get the alignment for the box and set it in the component state
-                const suggestionBoxAlgn = Utils.getSuggestionBoxAlgn(this.getTextbox(), pxToSubstract, this.props.listStyle);
                 this.setState({
                     presentationType: provider.presentationType(),
                     allowDividers: provider.allowDividers(),
-                    suggestionBoxAlgn,
                 });
 
                 break;

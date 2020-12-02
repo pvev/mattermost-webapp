@@ -1145,13 +1145,10 @@ export function getCaretXYCoordinate(textArea) {
 
 export function getViewportSize(win) {
     const w = win || window;
-
     if (w.innerWidth != null) {
         return {w: w.innerWidth, h: w.innerHeight};
     }
-
     const {clientWidth, clientHeight} = w.document.body;
-
     return {w: clientWidth, h: clientHeight};
 }
 
@@ -1172,13 +1169,12 @@ export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0, boxLocation = 
             pixelsToMoveY: 0,
         };
     }
-    const caretXCoordinateInTxtArea = getCaretXYCoordinate(textArea).x;
-    let caretYCoordinateInTxtArea = getCaretXYCoordinate(textArea).y;
-
+    const caretCoordinatesInTxtArea = getCaretXYCoordinate(textArea);
+    const caretXCoordinateInTxtArea = caretCoordinatesInTxtArea.x;
+    let caretYCoordinateInTxtArea = caretCoordinatesInTxtArea.y;
     const viewportWidth = getViewportSize().w;
 
-    // value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
-    const suggestionBoxWidth = Constants.SUGGESTION_LIST_MODAL_WIDTH;
+    const suggestionBoxWidth = getSuggestionBoxWidth(textArea);
 
     // value in pixels for the offsetLeft for the textArea
     const txtAreaOffsetLft = offsetTopLeft(textArea).left;
@@ -1189,20 +1185,15 @@ export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0, boxLocation = 
     // the x coordinate in the viewport of the suggestion box border-right
     const xBoxRightCoordinate = caretXCoordinateInTxtArea + txtAreaOffsetLft + suggestionBoxWidth;
 
-    const txtAreaLineHeight = Number(getComputedStyle(textArea)?.lineHeight.replace('px', ''));
-
-    if (isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate)) {
+    // if the right-border edge of the suggestion box will overflow the x-axis viewport
+    if (xBoxRightCoordinate > viewportWidth) {
+        // stick the suggestion list to the very right of the TextArea
         pxToTheRight = textArea.offsetWidth - suggestionBoxWidth;
     }
-
+    const txtAreaLineHeight = Number(getComputedStyle(textArea)?.lineHeight.replace('px', ''));
     if (boxLocation === 'bottom') {
-        caretYCoordinateInTxtArea += txtAreaLineHeight;
-
-        // if the suggestion box was invoked from the last line in the post box
-        if (caretYCoordinateInTxtArea >= (textArea.offsetHeight - txtAreaLineHeight)) {
-            // stick the suggestion box to the base of the post box
-            caretYCoordinateInTxtArea = textArea.offsetHeight;
-        }
+        // Add the line height and 4 extra px so it looks less tighter
+        caretYCoordinateInTxtArea += txtAreaLineHeight + 4;
     }
     return {
         pixelsToMoveX: Math.max(0, Math.round(pxToTheRight)),
@@ -1210,6 +1201,17 @@ export function getSuggestionBoxAlgn(textArea, pxToSubstract = 0, boxLocation = 
         // if the suggestion box was invoked from the first line in the post box, stick to the top of the post box
         pixelsToMoveY: Math.round(caretYCoordinateInTxtArea > txtAreaLineHeight ? caretYCoordinateInTxtArea : 0),
     };
+}
+
+export function getSuggestionBoxWidth(textArea) {
+    if (textArea.id === 'edit_textbox') {
+        // when the sugeestion box is in the edit mode it will inhering the class .modal suggestion-list which has width: 100%
+        return textArea.offsetWidth;
+    }
+
+    // 496 - value in pixels used in suggestion-list__content class line 72 file _suggestion-list.scss
+
+    return Constants.SUGGESTION_LIST_MODAL_WIDTH;
 }
 
 export function getPxToSubstract(char = '@') {
@@ -1229,15 +1231,21 @@ export function getPxToSubstract(char = '@') {
     return 0;
 }
 
-export function getTriggerChar(pretext) {
-    if (!pretext || typeof pretext !== 'string') {
+export function getTriggerChar(provider) {
+    if (!provider || typeof provider !== 'object') {
         return '@';
     }
-    return pretext.split(' ').pop()[0];
-}
+    switch (provider.constructor.name) {
+    case 'EmoticonProvider':
+        return ':';
+    case 'AtMentionProvider':
+        return '@';
+    case 'ChannelMentionProvider':
+        return '~';
 
-export function isBoxOutOfRightSideViewport(viewportWidth, xBoxRightCoordinate) {
-    return xBoxRightCoordinate > viewportWidth;
+    default:
+        return '@';
+    }
 }
 
 export function setSelectionRange(input, selectionStart, selectionEnd) {

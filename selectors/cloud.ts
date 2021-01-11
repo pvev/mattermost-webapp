@@ -13,11 +13,16 @@ export enum InquiryType {
     Billing = 'billing'
 }
 
-export function getCloudContactUsLink(state: GlobalState, inquiry: InquiryType): string {
+export enum InquiryDetail{
+    CancelSubscription = 'cancel_account',
+}
+
+export function getCloudContactUsLink(state: GlobalState, inquiry: InquiryType, inquiryDetail?: InquiryDetail): string {
     // cloud/contact-us with query params for name, email and inquiry
     const cwsUrl = getConfig(state).CWSUrl;
     const user = getCurrentUser(state);
     const fullName = `${user.first_name} ${user.last_name}`;
+    const inquiryDetailQuery = inquiryDetail !== undefined ? `&inquiry-detail=${inquiryDetail}` : '';
 
-    return `${cwsUrl}/cloud/contact-us?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(fullName)}&inquiry=${inquiry}`;
+    return `${cwsUrl}/cloud/contact-us?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(fullName)}&inquiry=${inquiry}${inquiryDetailQuery}`;
 }

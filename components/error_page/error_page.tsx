@@ -12,6 +12,7 @@ import WarningIcon from 'components/widgets/icons/fa_warning_icon';
 
 import ErrorTitle from './error_title';
 import ErrorMessage from './error_message';
+import WorkspaceUserLimitReached from './workspace_user_limit_reached';
 
 type Location = {
     search: string;
@@ -126,26 +127,27 @@ export default class ErrorPage extends React.PureComponent<Props> {
 
         return (
             <div className='container-fluid'>
-                <div className='error__container'>
-                    <div className='error__icon'>
-                        <WarningIcon/>
-                    </div>
-                    <h2
-                        data-testid='errorMessageTitle'
-                    >
-                        <ErrorTitle
+                {type === ErrorPageTypes.MAX_FREE_USERS_REACHED ? <WorkspaceUserLimitReached/> :
+                    <div className='error__container'>
+                            <div className='error__icon'>
+                            <WarningIcon/>
+                        </div>
+                            <h2
+                            data-testid='errorMessageTitle'
+                        >
+                            <ErrorTitle
+                                    type={type}
+                                    title={title}
+                                />
+                        </h2>
+                            <ErrorMessage
                             type={type}
-                            title={title}
+                            message={message}
+                            service={service}
+                            isGuest={isGuest}
                         />
-                    </h2>
-                    <ErrorMessage
-                        type={type}
-                        message={message}
-                        service={service}
-                        isGuest={isGuest}
-                    />
-                    {backButton}
-                </div>
+                            {backButton}
+                    </div>}
             </div>
         );
     }

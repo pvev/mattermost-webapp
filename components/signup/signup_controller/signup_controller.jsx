@@ -7,6 +7,7 @@ import {FormattedMessage} from 'react-intl';
 import {Link} from 'react-router-dom';
 import {Client4} from 'mattermost-redux/client';
 
+
 import {browserHistory} from 'utils/browser_history';
 import * as GlobalActions from 'actions/global_actions';
 import logoImage from 'images/logo.png';
@@ -18,6 +19,7 @@ import LocalizedIcon from 'components/localized_icon';
 import LoadingScreen from 'components/loading_screen';
 import {Constants} from 'utils/constants';
 import {t} from 'utils/i18n';
+import {isEmpty} from 'lodash';
 
 export default class SignupController extends React.PureComponent {
     static propTypes = {
@@ -43,6 +45,7 @@ export default class SignupController extends React.PureComponent {
             removeGlobalItem: PropTypes.func.isRequired,
             getTeamInviteInfo: PropTypes.func.isRequired,
             addUserToTeamFromInvite: PropTypes.func.isRequired,
+            getSubscriptionStats: PropTypes.func,
         }).isRequired,
     }
 
@@ -67,6 +70,10 @@ export default class SignupController extends React.PureComponent {
 
             if (inviteId) {
                 loading = true;
+                // load stats to be used to restrict users after free maximum number reached
+                if (isEmpty(this.props.subscriptionStats)) {
+                    this.props.actions.getSubscriptionStats();
+                }
             } else if (!this.props.loggedIn) {
                 usedBefore = props.usedBefore;
             } else if (!inviteId && !this.props.enableOpenServer && !this.props.noAccounts) {
@@ -96,8 +103,12 @@ export default class SignupController extends React.PureComponent {
             const inviteId = params.get('id') || '';
 
             const userLoggedIn = this.props.loggedIn;
+            const {isCloud, subscriptionStats} = this.props;
+            const isFreeTierWithNoAvailableSeats = true;//subscriptionStats && subscriptionStats.is_free_tier && subscriptionStats.remainin_seats === 0;
 
-            if ((inviteId || token) && userLoggedIn) {
+            if (isCloud && isFreeTierWithNoAvailableSeats) {
+                browserHistory.push('/error?type=max_free_users_reached')
+            } else if ((inviteId || token) && userLoggedIn) {
                 this.addUserToTeamFromInvite(token, inviteId);
             } else if (inviteId) {
                 this.getInviteInfo(inviteId);

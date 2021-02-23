@@ -441,7 +441,7 @@
   "admin.cloud.migrate.recommended4NewWorkspaces.banner.description": "It looks like your workspace has quite a bit of data in it already. While this feature is in Beta, it is recommended for new workspaces. If you wish to continue, there is a risk that conflicting data may cause problems.",
   "admin.cloud.migrate.recommended4NewWorkspaces.banner.title": "Importing is recommended for new workspaces",
   "admin.cloud.migrate.status": "Status",
-  "admin.cloud.migrate.tableType": "{chatService} Import",
+  "admin.cloud.migrate.tableType": "**{chatService} Import**",
   "admin.cloud.migrate.type": "Import Type",
   "admin.cloud.migrate.users": "Users",
   "admin.cluster.ClusterName": "Cluster Name:",

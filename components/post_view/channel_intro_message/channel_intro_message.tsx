@@ -22,12 +22,12 @@ import ChannelPermissionGate from 'components/permissions_gates/channel_permissi
 import TeamPermissionGate from 'components/permissions_gates/team_permission_gate';
 import FormattedMarkdownMessage from 'components/formatted_markdown_message';
 import EditIcon from 'components/widgets/icons/fa_edit_icon';
-import InvitationModal from 'components/invitation_modal';
 import AddGroupsToChannelModal from 'components/add_groups_to_channel_modal';
 import AddGroupsToTeamModal from 'components/add_groups_to_team_modal';
 
 import {getMonthLong} from 'utils/i18n.jsx';
 import * as Utils from 'utils/utils.jsx';
+import AddMembersCallToAction from './add_members_call_to_action';
 
 type Props = {
     currentUserId: string;
@@ -41,6 +41,8 @@ type Props = {
     creatorName: string;
     teammate: UserProfileRedux;
     teammateName?: string;
+    stats: any;
+    usersLimit: number;
 }
 
 export default class ChannelIntroMessage extends React.PureComponent<Props> {
@@ -57,6 +59,8 @@ export default class ChannelIntroMessage extends React.PureComponent<Props> {
             teamIsGroupConstrained,
             teammate,
             teammateName,
+            stats,
+            usersLimit,
         } = this.props;
 
         let centeredIntro = '';
@@ -69,7 +73,7 @@ export default class ChannelIntroMessage extends React.PureComponent<Props> {
         } else if (channel.type === Constants.GM_CHANNEL) {
             return createGMIntroMessage(channel, centeredIntro, channelProfiles, currentUserId);
         } else if (channel.name === Constants.DEFAULT_CHANNEL) {
-            return createDefaultIntroMessage(channel, centeredIntro, enableUserCreation, isReadOnly, teamIsGroupConstrained);
+            return createDefaultIntroMessage(channel, centeredIntro, stats, usersLimit, enableUserCreation, isReadOnly, teamIsGroupConstrained);
         } else if (channel.name === Constants.OFFTOPIC_CHANNEL) {
             return createOffTopicIntroMessage(channel, centeredIntro);
         } else if (channel.type === Constants.OPEN_CHANNEL || channel.type === Constants.PRIVATE_CHANNEL) {
@@ -232,8 +236,20 @@ function createOffTopicIntroMessage(channel: Channel, centeredIntro: string) {
     );
 }
 
-export function createDefaultIntroMessage(channel: Channel, centeredIntro: string, enableUserCreation?: boolean, isReadOnly?: boolean, teamIsGroupConstrained?: boolean) {
+export function createDefaultIntroMessage(
+    channel: Channel,
+    centeredIntro: string,
+    stats: any,
+    usersLimit: number,
+    enableUserCreation?: boolean,
+    isReadOnly?: boolean,
+    teamIsGroupConstrained?: boolean,
+) {
     let teamInviteLink = null;
+    let totalUsers = 0;
+    if (stats && (typeof stats.TOTAL_USERS === 'number')) {
+        totalUsers = stats.TOTAL_USERS;
+    }
 
     if (!isReadOnly && enableUserCreation) {
         teamInviteLink = (
@@ -246,29 +262,7 @@ export function createDefaultIntroMessage(channel: Channel, centeredIntro: strin
                     permissions={[Permissions.ADD_USER_TO_TEAM]}
                 >
                     {!teamIsGroupConstrained &&
-                    <ToggleModalButtonRedux
-                        accessibilityLabel={Utils.localizeMessage('intro_messages.inviteOthers', 'Invite others to this team')}
-                        id='introTextInvite'
-                        className='intro-links color--link cursor--pointer'
-                        modalId={ModalIdentifiers.INVITATION}
-                        dialogType={InvitationModal}
-                    >
-                        <FormattedMessage
-                            id='generic_icons.add'
-                            defaultMessage='Add Icon'
-                        >
-                            {(title: string) => (
-                                <i
-                                    className='fa fa-user-plus'
-                                    title={title}
-                                />
-                            )}
-                        </FormattedMessage>
-                        <FormattedMessage
-                            id='intro_messages.inviteOthers'
-                            defaultMessage='Invite others to this team'
-                        />
-                    </ToggleModalButtonRedux>
+                        <AddMembersCallToAction totalUsers={totalUsers} usersLimit={usersLimit} channel={channel} />
                     }
                     {teamIsGroupConstrained &&
                     <ToggleModalButton
@@ -350,8 +344,8 @@ export function createDefaultIntroMessage(channel: Channel, centeredIntro: strin
                     />
                 }
             </p>
-            {teamInviteLink}
             {setHeaderButton}
+            {teamInviteLink}
             <br/>
         </div>
     );

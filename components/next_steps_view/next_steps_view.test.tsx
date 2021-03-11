@@ -35,6 +35,7 @@ describe('components/next_steps_view', () => {
         currentUser: TestHelper.getUserMock(),
         preferences: [],
         isFirstAdmin: true,
+        isCloud: false,
         actions: {
             setShowNextStepsView: jest.fn(),
             savePreferences: jest.fn(),

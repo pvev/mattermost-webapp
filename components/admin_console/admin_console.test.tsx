@@ -7,6 +7,8 @@ import {shallow} from 'enzyme';
 import AdminDefinition from 'components/admin_console/admin_definition';
 import {TestHelper} from 'utils/test_helper';
 
+import {Team} from 'mattermost-redux/types/teams';
+
 import AdminConsole from './admin_console';
 
 describe('components/AdminConsole', () => {
@@ -55,6 +57,7 @@ describe('components/AdminConsole', () => {
             isCurrentUserSystemAdmin: false,
             currentUserHasAnAdminRole: false,
             consoleAccess: {read: {}, write: {}},
+            team: {name: 'development'} as Team
         };
         const wrapper = shallow(
             <AdminConsole {...props}/>,
@@ -69,6 +72,7 @@ describe('components/AdminConsole', () => {
             isCurrentUserSystemAdmin: true,
             currentUserHasAnAdminRole: false,
             consoleAccess: {read: {}, write: {}},
+            team: {name: 'development'} as Team
         };
         const wrapper = shallow(
             <AdminConsole {...props}/>,

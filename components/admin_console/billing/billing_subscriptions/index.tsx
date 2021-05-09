@@ -63,12 +63,20 @@ const BillingSubscriptions: React.FC<Props> = () => {
 
     const [showCreditCardBanner, setShowCreditCardBanner] = useState(true);
 
+        // let subscriptionPlan = 'CLOUD_STARTER';
+    let subscriptionPlan = 'CLOUD_PROFESSIONAL';
+    // let subscriptionPlan = 'CLOUD_ENTERPRISE';
+
     let isFreeTrial = false;
     let daysLeftOnTrial = 0;
     if (subscription?.is_free_trial === 'true') {
         isFreeTrial = true;
         daysLeftOnTrial = getRemainingDaysFromFutureTimestamp(subscription.trial_end_at);
+        subscriptionPlan = '';
     }
+
+    // isFreeTrial = true;
+    // daysLeftOnTrial = 10;
 
     useEffect(() => {
         getCloudSubscription()(dispatch, store.getState());
@@ -139,6 +147,7 @@ const BillingSubscriptions: React.FC<Props> = () => {
                     <div className='BillingSubscriptions__topWrapper'>
                         <PlanDetails
                             isFreeTrial={isFreeTrial}
+                            subscriptionPlan={subscriptionPlan}
                         />
                         <BillingSummary
                             isPaidTier={isPaidTier}
@@ -146,7 +155,7 @@ const BillingSubscriptions: React.FC<Props> = () => {
                             daysLeftOnTrial={daysLeftOnTrial}
                         />
                     </div>
-                    {contactSalesCard(contactSalesLink, isFreeTrial, trialQuestionsLink)}
+                    {contactSalesCard(contactSalesLink, isFreeTrial, trialQuestionsLink, subscriptionPlan)}
                     {cancelSubscription(cancelAccountLink, isFreeTrial, isPaidTier)}
                 </div>
             </div>

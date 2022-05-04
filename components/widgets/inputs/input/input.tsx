@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
 import classNames from 'classnames';
 
@@ -22,6 +22,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     inputClassName?: string;
     limit?: number;
     useLegend?: boolean;
+    customError?: string;
 }
 
 function Input({
@@ -44,6 +45,7 @@ function Input({
     inputClassName,
     limit,
     maxLength,
+    customError,
     onFocus,
     onBlur,
     onChange,
@@ -53,6 +55,12 @@ function Input({
 
     const [focused, setFocused] = useState(false);
     const [stateError, setStateError] = useState('');
+
+    useEffect(() => {
+        if (customError !== undefined && customError !== null && customError !== '') {
+            setStateError(customError);
+        }
+    }, [customError]);
 
     const handleOnFocus = (event: React.FocusEvent<HTMLInputElement>) => {
         setFocused(true);

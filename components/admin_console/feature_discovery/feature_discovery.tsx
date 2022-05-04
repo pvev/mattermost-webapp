@@ -45,6 +45,7 @@ type Props = {
         openModal: <P>(modalData: ModalData<P>) => void;
     };
     isCloud: boolean;
+    alreadyHadCloudTrial: boolean;
 }
 
 type State = {
@@ -112,7 +113,7 @@ export default class FeatureDiscovery extends React.PureComponent<Props, State> 
                 defaultMessage='Start trial'
             />
         );
-        if (this.props.isCloud) {
+        if (this.props.isCloud && this.props.alreadyHadCloudTrial) {
             primaryMessage = (
                 <FormattedMessage
                     id='admin.ldap_feature_discovery_cloud.call_to_action.primary'
@@ -126,7 +127,7 @@ export default class FeatureDiscovery extends React.PureComponent<Props, State> 
                     type='button'
                     className='btn btn-primary'
                     data-testid='featureDiscovery_primaryCallToAction'
-                    onClick={this.props.isCloud ? this.openUpgradeModal : this.requestLicense}
+                    onClick={(this.props.isCloud && this.props.alreadyHadCloudTrial) ? this.openUpgradeModal : this.requestLicense}
                 >
                     <LoadingWrapper
                         loading={this.state.gettingTrial}
@@ -148,7 +149,7 @@ export default class FeatureDiscovery extends React.PureComponent<Props, State> 
                     />
                 </a>
                 {gettingTrialError}
-                {!this.props.isCloud && <p className='trial-legal-terms'>
+                {(!this.props.isCloud && this.props.alreadyHadCloudTrial) && <p className='trial-legal-terms'>
                     <FormattedMarkdownMessage
                         id='admin.license.trial-request.accept-terms'
                         defaultMessage='By clicking **Start trial**, I agree to the [Mattermost Software Evaluation Agreement](!https://mattermost.com/software-evaluation-agreement/), [Privacy Policy](!https://mattermost.com/privacy-policy/), and receiving product emails.'

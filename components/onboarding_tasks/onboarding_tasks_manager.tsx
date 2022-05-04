@@ -99,7 +99,7 @@ export const useTasksList = () => {
     const isCurrentLicensed = license?.IsLicensed;
 
     // Show this CTA if the instance is currently not licensed and has never had a trial license loaded before
-    const showStartTrialTask = (isCurrentLicensed === 'false' && isPrevLicensed === 'false');
+    const showStartTrialTask = true; // (isCurrentLicensed === 'false' && isPrevLicensed === 'false');
     const list: Record<string, string> = {...OnboardingTasksName};
     const pluginsPreferenceState = useSelector((state: GlobalState) => get(state, Constants.Preferences.ONBOARDING, OnboardingPreferences.USE_CASE));
     const pluginsPreference = pluginsPreferenceState && JSON.parse(pluginsPreferenceState);

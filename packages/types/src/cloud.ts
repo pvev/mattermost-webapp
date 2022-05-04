@@ -22,6 +22,7 @@ export type Subscription = {
     last_invoice?: Invoice;
     trial_end_at: number;
     is_free_trial: string;
+    is_freemium?: string;
 }
 
 export type Product = {

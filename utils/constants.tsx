@@ -343,6 +343,7 @@ export const ModalIdentifiers = {
     START_TRIAL_MODAL: 'start_trial_modal',
     TRIAL_BENEFITS_MODAL: 'trial_benefits_modal',
     LEARN_MORE_TRIAL_MODAL: 'learn_more_trial_modal',
+    CLOUD_START_TRIAL_MODAL: 'cloud_start_trial_modal',
     ENTERPRISE_EDITION_LICENSE: 'enterprise_edition_license',
     CONFIRM_NOTIFY_ADMIN: 'confirm_notify_admin',
     REMOVE_NEXT_STEPS_MODAL: 'remove_next_steps_modal',
@@ -577,6 +578,7 @@ export const TELEMETRY_CATEGORIES = {
     SELF_HOSTED_START_TRIAL_MODAL: 'self_hosted_start_trial_modal',
     SELF_HOSTED_START_TRIAL_TASK_LIST: 'self_hosted_start_trial_task_list',
     WORKSPACE_OPTIMIZATION_DASHBOARD: 'workspace_optimization_dashboard',
+    CLOUD_START_TRIAL_MODAL: 'cloud_start_trial_modal',
 };
 
 export const TELEMETRY_LABELS = {

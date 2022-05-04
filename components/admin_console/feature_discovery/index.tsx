@@ -23,6 +23,9 @@ function mapStateToProps(state: GlobalState) {
         stats: state.entities.admin.analytics,
         prevTrialLicense: state.entities.admin.prevTrialLicense,
         isCloud: isCloudLicense(getLicense(state)),
+
+        // TODO Freemium: get this value from the correct place
+        alreadyHadCloudTrial: true,
     };
 }
 

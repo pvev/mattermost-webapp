@@ -75,12 +75,17 @@ const useMetricsData = () => {
     const prevTrialLicense = useSelector((state: GlobalState) => state.entities.admin.prevTrialLicense);
     const license = useSelector(getLicense);
 
-    const canStartTrial = license?.IsLicensed !== 'true' && prevTrialLicense?.IsLicensed !== 'true';
+    let canStartTrial = license?.IsLicensed !== 'true' && prevTrialLicense?.IsLicensed !== 'true';
     const daysUntilExpiration = daysToLicenseExpire(license) || -1;
 
     const isLicensed = license?.IsLicensed === 'true' && daysUntilExpiration >= 0;
 
     const isCloud = license?.Cloud === 'true';
+    if (isCloud) {
+        // TODO Freemium: get this value from the correct place
+        const alreadyHadCloudTrial = true;
+        canStartTrial = !alreadyHadCloudTrial;
+    }
     const isEnterpriseLicense = isEnterpriseOrE20License(license);
     const isStarterLicense = getIsStarterLicense(license);
 

@@ -120,7 +120,14 @@ const Completed = (props: Props): JSX.Element => {
     const isCurrentLicensed = license?.IsLicensed;
 
     // Show this CTA if the instance is currently not licensed and has never had a trial license loaded before
-    const showStartTrialBtn = (isCurrentLicensed === 'false' && isPrevLicensed === 'false');
+    let showStartTrialBtn = (isCurrentLicensed === 'false' && isPrevLicensed === 'false');
+    const isCloud = license.Cloud === 'true';
+    // TODO Freemium -> verify here how to show the cloud start trial modal
+
+    if (isCloud) {
+        const alreadyHadCloudTrial = true;
+        showStartTrialBtn = alreadyHadCloudTrial;
+    }
 
     const {formatMessage} = useIntl();
 

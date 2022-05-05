@@ -7,7 +7,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import UpgradeLink from 'components/widgets/links/upgrade_link';
 import TrialBenefitsModal from 'components/trial_benefits_modal/trial_benefits_modal';
-import CloudStartTrialModal from 'components/start_cloud_trial_modal/cloud_start_trial_modal';
+import CloudStartTrialModal from 'components/cloud_start_trial_modal/cloud_start_trial_modal';
 
 import {DispatchFunc} from 'mattermost-redux/types/actions';
 import {GlobalState} from 'mattermost-redux/types/store';
@@ -32,7 +32,7 @@ const MenuCloudTrial = ({id}: Props) => {
 
     const isCloud = license?.Cloud === 'true';
     const isFreeTrial = false && subscription?.is_free_trial === 'true';
-    const isCloudFreeEnabled = true || useSelector(cloudFreeEnabled);
+    const isCloudFreeEnabled = true; //useSelector(cloudFreeEnabled);
 
     // TODO fremmium check the limits to show the limit warning during the trial
     // warning instead of the cta

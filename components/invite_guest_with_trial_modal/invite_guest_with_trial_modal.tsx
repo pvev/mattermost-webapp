@@ -10,6 +10,7 @@ import {trackEvent} from 'actions/telemetry_actions';
 import {TELEMETRY_CATEGORIES} from 'utils/constants';
 
 import GenericModal from 'components/generic_modal';
+import OpenCloudTrialModalBtn from 'components/cloud_start_trial_modal/open_cloud_trial_modal_btn';
 
 import './invite_guest_with_trial_modal.scss';
 
@@ -57,8 +58,7 @@ const InviteGuestWithTrialModal = (
                 />
             </div>
             <div className='start-trial-button'>
-                {/* <StartCloudTrialBtn/> */}
-                <button>{'Try free for 30 days'}</button>
+                <OpenCloudTrialModalBtn telemetryId={'cloud_start_trial_from_invite_guest'}/>
             </div>
         </GenericModal>
     );

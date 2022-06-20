@@ -222,7 +222,7 @@ export default function InviteView(props: Props) {
                     emailInvitationsEnabled={props.emailInvitationsEnabled}
                     autoFocus={true}
                 />
-                {props.canInviteGuests && props.canAddUsers &&
+                {true &&
                 <InviteAs
                     inviteType={props.inviteType}
                     setInviteAs={props.setInviteAs}

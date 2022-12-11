@@ -57,7 +57,7 @@ const ShowStartTrialModal = () => {
     const [totalUsers, setTotalUsers] = useState(stats?.TOTAL_USERS || 0);
 
     const getTotalUsers = async () => {
-        const {data} = await dispatch(getFilteredUsersNoBotsStats({include_bots: false}));
+        const {data} = await dispatch(getFilteredUsersNoBotsStats({include_bots: false, include_deleted: true}));
         setTotalUsers(data?.total_users_count);
     };
 

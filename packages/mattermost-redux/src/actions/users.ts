@@ -227,6 +227,14 @@ export function getFilteredUsersStats(options: GetFilteredUsersStatsOpts = {}): 
     };
 }
 
+// system_users.ts > index get total users stats
+// Billing subscriptions // use to analytics total users was removed here https://github.com/mattermost/mattermost-webapp/commit/144e5eef93cc8575fd5faf60e21b382aef3202ee#diff-a6189967fd50baa6b7db4f3163d5564d6ee31f5b2263f05e2b22d749b292d6e8L127
+// License settings.tsx load total users
+// Cloud trial announcment bar.tsx // fail to see why analytics, seem to be bad implementation from the beggining
+// plan details > pull analytics from state
+// payment announcement bar, loads it but doesn't use it
+// start trial modal > uses for total users
+// warn metric ack modal > uses for total users
 export function getFilteredUsersNoBotsStats(options: GetFilteredUsersStatsOpts = {}): ActionFunc {
     return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
         let stats: UsersStats;

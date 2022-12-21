@@ -16,6 +16,8 @@ import URLInput from 'components/widgets/inputs/url_input/url_input';
 import MenuWrapper from 'components/widgets/menu/menu_wrapper';
 import Menu from 'components/widgets/menu/menu';
 
+import Pluggable from 'plugins/pluggable';
+
 import {createChannel} from 'mattermost-redux/actions/channels';
 import Permissions from 'mattermost-redux/constants/permissions';
 import {get as getPreference} from 'mattermost-redux/selectors/entities/preferences';
@@ -93,6 +95,8 @@ const NewChannelModal = () => {
     const canCreatePublicChannel = useSelector((state: GlobalState) => (currentTeamId ? haveICurrentChannelPermission(state, Permissions.CREATE_PUBLIC_CHANNEL) : false));
     const canCreatePrivateChannel = useSelector((state: GlobalState) => (currentTeamId ? haveICurrentChannelPermission(state, Permissions.CREATE_PRIVATE_CHANNEL) : false));
     const dispatch = useDispatch<DispatchFunc>();
+
+    const pluginsComponents = useSelector((state: GlobalState) => state.plugins.components);
 
     const [type, setType] = useState(getChannelTypeFromPermissions(canCreatePublicChannel, canCreatePrivateChannel));
     const [displayName, setDisplayName] = useState('');
@@ -321,20 +325,25 @@ const NewChannelModal = () => {
     const canCreate = displayName && !displayNameError && url && !urlError && type && !purposeError && !serverError;
 
     const showNewBoardTemplateSelector = async () => {
-        setAddBoard((prev) => !prev);
-        if (boardTemplates.length > 0) {
-            return;
-        }
-        const {data: templates} = await dispatch(getBoardsTemplates());
+        const action = pluginsComponents.CreateBoardFromTemplate[0].action;
+        action('sapo gran hijo de puta');
+        // for (const plugin of this.props.pluginOptions) {
+        //     plugin.onChannelCreated?.(this.state.pluginOptions[plugin.id]);
+        // }
+        // setAddBoard((prev) => !prev);
+        // if (boardTemplates.length > 0) {
+        //     return;
+        // }
+        // const {data: templates} = await dispatch(getBoardsTemplates());
 
-        // define a dummy template use to identify the empty board
-        const emptyBoard = [{
-            id: EMPTY_BOARD,
-            title: 'Empty board',
-            icon: '',
-            description: 'Create an empty board.',
-        } as BoardTemplate];
-        setBoardTemplates([...templates || [], ...emptyBoard]);
+        // // define a dummy template use to identify the empty board
+        // const emptyBoard = [{
+        //     id: EMPTY_BOARD,
+        //     title: 'Empty board',
+        //     icon: '',
+        //     description: 'Create an empty board.',
+        // } as BoardTemplate];
+        // setBoardTemplates([...templates || [], ...emptyBoard]);
     };
 
     const newBoardInfoIcon = () => {
@@ -452,6 +461,9 @@ const NewChannelModal = () => {
                             </span>
                         </div>
                     )}
+                    <div style={{border: '1px solid red', width: '80px', height: '80px'}}>
+                        <Pluggable pluggableName='CreateBoardFromTemplate'/>
+                    </div>
                     {focalboardEnabled && <div className='add-board-to-channel'>
                         <label>
                             <input

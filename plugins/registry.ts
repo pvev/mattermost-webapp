@@ -135,6 +135,28 @@ export default class PluginRegistry {
         return dispatchPluginComponentAction('LinkTooltip', this.id, component);
     });
 
+    // PABLO: poner un comentario decente - register create channel extra fields - post creation -react select*
+    // registerCreateBoardFromTemplate = reArg(['component'], ({component}: DPluginComponentProp) => {
+    //     return dispatchPluginComponentAction('CreateBoardFromTemplate', this.id, component);
+    // });
+
+    registerCreateBoardFromTemplate = reArg(['component', 'action'], ({component, action}) => {
+        const id = generateId();
+
+        store.dispatch({
+            type: ActionTypes.RECEIVED_PLUGIN_COMPONENT,
+            name: 'CreateBoardFromTemplate',
+            data: {
+                id,
+                pluginId: this.id,
+                component,
+                action,
+            },
+        });
+
+        return id;
+    });
+
     // Add a button to the channel header. If there are more than one buttons registered by any
     // plugin, a dropdown menu is created to contain all the plugin buttons.
     // Accepts the following:

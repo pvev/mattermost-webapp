@@ -76,6 +76,10 @@ export default function Pluggable(props: Props): JSX.Element | null {
             (element) => element.id === pluggableId);
     }
 
+    if (pluggableName === 'CreateBoardFromTemplateToggle') {
+        debugger;
+    }
+
     // Override the default component with any registered plugin's component
     // Select a specific component by pluginId if available
     let content;

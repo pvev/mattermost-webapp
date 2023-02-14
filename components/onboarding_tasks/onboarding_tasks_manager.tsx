@@ -190,9 +190,9 @@ export const useTasksList = () => {
     }
 
     // explore other tools tour is only shown to subsequent admins and end users
-    if (isUserFirstAdmin || (!pluginsList.playbooks && !pluginsList.focalboard)) {
-        delete list.EXPLORE_OTHER_TOOLS;
-    }
+    // if (isUserFirstAdmin || (!pluginsList.playbooks && !pluginsList.focalboard)) {
+    //     delete list.EXPLORE_OTHER_TOOLS;
+    // }
 
     // invite other users is hidden for guest users
     if (isGuestUser) {

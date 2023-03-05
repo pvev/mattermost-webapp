@@ -24,6 +24,8 @@ import KeyboardShortcutSequence, {
     KEYBOARD_SHORTCUTS,
 } from 'components/keyboard_shortcuts/keyboard_shortcuts_sequence';
 
+import AddChannelsCtaButton from '../add_channels_cta_button';
+
 import SidebarCategorySortingMenu from './sidebar_category_sorting_menu';
 import SidebarCategoryMenu from './sidebar_category_menu';
 
@@ -37,6 +39,7 @@ type Props = {
     draggingState: DraggingState;
     currentUserId: string;
     touchedInviteMembersButton: boolean;
+    touchedAddChannelsCtaButton: boolean;
     isAdmin: boolean;
     actions: {
         setCategoryCollapsed: (categoryId: string, collapsed: boolean) => void;
@@ -342,6 +345,30 @@ export default class SidebarCategory extends React.PureComponent<Props, State> {
                         );
                     }
 
+                    let addChannelsCtaButton = null;
+                    if (category.type === 'channels' && !category.collapsed) {
+                        addChannelsCtaButton = (
+                            <AddChannelsCtaButton
+                                className='followingSibling'
+                                touchedAddChannelsCtaButton={this.props.touchedAddChannelsCtaButton}
+                                isAdmin={this.props.isAdmin}
+                                onClick={() => {
+                                    if (!this.props.touchedAddChannelsCtaButton) {
+                                        this.props.actions.savePreferences(
+                                            this.props.currentUserId,
+                                            [{
+                                                category: Preferences.TOUCHED,
+                                                user_id: this.props.currentUserId,
+                                                name: Touched.ADD_CHANNELS,
+                                                value: 'true',
+                                            }],
+                                        );
+                                    }
+                                }}
+                            />
+                        );
+                    }
+
                     return (
                         <div
                             className={classNames('SidebarChannelGroup a11y__section', {
@@ -399,6 +426,7 @@ export default class SidebarCategory extends React.PureComponent<Props, State> {
                                 }}
                             </Droppable>
                             {inviteMembersButton}
+                            {addChannelsCtaButton}
                         </div>
                     );
                 }}

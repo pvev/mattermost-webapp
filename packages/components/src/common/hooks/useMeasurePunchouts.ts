@@ -36,6 +36,12 @@ export const useMeasurePunchouts = (elementIds: string[], additionalDeps: any[],
             window.removeEventListener('resize', updateSize);
     }, []);
 
+    useLayoutEffect(() => {
+        window.addEventListener('resize', updateSize);
+        return () =>
+            window.removeEventListener('resize', updateSize);
+    }, []);
+
     const channelPunchout = useMemo(() => {
         let minX = Number.MAX_SAFE_INTEGER;
         let minY = Number.MAX_SAFE_INTEGER;

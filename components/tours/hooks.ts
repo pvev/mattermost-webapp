@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {useCallback} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -36,6 +36,7 @@ import {
     TutorialTourName,
     WorkTemplateTourSteps,
 } from './constant';
+import { getIsRhsExpanded } from 'selectors/rhs';
 
 export const useGetTourSteps = (tourCategory: string) => {
     const isGuestUser = useSelector((state: GlobalState) => isCurrentUserGuestUser(state));
@@ -216,4 +217,20 @@ export const useHandleNavigationAndExtraActions = (tourCategory: string) => {
         lastStepActions(lastStep);
         nextStepActions(step);
     }, [nextStepActions, lastStepActions]);
+};
+
+export const useGetTourtipRedraw = () => {
+    const [redraw, setRedraw] = useState(false);
+    const isRhsExpanded = useSelector(getIsRhsExpanded);
+
+    useEffect(() => {
+        redrawToortip();
+    }, [isRhsExpanded]);
+
+    const redrawToortip = () => {
+        setTimeout(() => {
+            setRedraw(!redraw);
+        }, 500);
+    };
+    return {redraw};
 };

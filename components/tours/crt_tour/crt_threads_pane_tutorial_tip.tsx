@@ -19,7 +19,7 @@ const CRTThreadsPaneTutorialTip = () => {
     const {formatMessage} = useIntl();
     const currentUserId = useSelector(getCurrentUserId);
 
-    const {redraw} = useGetTourtipRedraw();
+    const {redraw} = useGetTourtipRedraw('sidebar-right');
 
     const title = (
         <FormattedMessage

@@ -5,7 +5,7 @@ import {useCallback, useEffect, useState} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {without} from 'lodash';
+import {throttle, without} from 'lodash';
 
 import {getCurrentUserId, isCurrentUserGuestUser} from 'mattermost-redux/selectors/entities/users';
 import {getCurrentRelativeTeamUrl} from 'mattermost-redux/selectors/entities/teams';
@@ -17,6 +17,7 @@ import {setAddChannelDropdown} from 'actions/views/add_channel_dropdown';
 import {switchToChannels} from 'actions/views/onboarding_tasks';
 import {showRHSPlugin} from 'actions/views/rhs';
 import {setProductMenuSwitcherOpen} from 'actions/views/product_menu';
+import {getIsRhsExpanded} from 'selectors/rhs';
 
 import {useGetRHSPluggablesIds} from 'components/work_templates/hooks';
 
@@ -36,7 +37,6 @@ import {
     TutorialTourName,
     WorkTemplateTourSteps,
 } from './constant';
-import { getIsRhsExpanded } from 'selectors/rhs';
 
 export const useGetTourSteps = (tourCategory: string) => {
     const isGuestUser = useSelector((state: GlobalState) => isCurrentUserGuestUser(state));
@@ -219,18 +219,31 @@ export const useHandleNavigationAndExtraActions = (tourCategory: string) => {
     }, [nextStepActions, lastStepActions]);
 };
 
-export const useGetTourtipRedraw = () => {
+export const useGetTourtipRedraw = (elementId: string) => {
     const [redraw, setRedraw] = useState(false);
-    const isRhsExpanded = useSelector(getIsRhsExpanded);
+    const [width, setWidth] = useState(0);
+
+    // eslint-disable-next-line consistent-return
+    useEffect(() => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            const observer = new ResizeObserver(() => {
+                setWidth(element.offsetWidth);
+            });
+            observer.observe(element);
+            return () => {
+                observer.unobserve(element);
+            };
+        }
+    }, []);
 
     useEffect(() => {
         redrawToortip();
-    }, [isRhsExpanded]);
+    }, [width]);
 
     const redrawToortip = () => {
-        setTimeout(() => {
-            setRedraw(!redraw);
-        }, 500);
+        setRedraw(!redraw);
     };
+
     return {redraw};
 };

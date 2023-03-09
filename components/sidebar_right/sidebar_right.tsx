@@ -257,6 +257,8 @@ export default class SidebarRight extends React.PureComponent<Props, State> {
         const isSidebarRightExpanded = (postRightVisible || postCardVisible || isPluginView || searchVisible || isPostEditHistory) && isExpanded;
         const containerClassName = classNames('sidebar--right', 'move--left is-open', {
             'sidebar--right--expanded expanded': isSidebarRightExpanded,
+        }, {
+            'sidebar--right--collapsed': !isSidebarRightExpanded,
         });
 
         return (

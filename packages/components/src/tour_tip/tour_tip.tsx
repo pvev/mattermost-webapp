@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {FormattedMessage} from 'react-intl';
 import Tippy from '@tippyjs/react';
 import {Placement} from 'tippy.js';
@@ -14,7 +14,6 @@ import 'tippy.js/themes/light-border.css';
 import 'tippy.js/animations/scale-subtle.css';
 import 'tippy.js/animations/perspective-subtle.css';
 import {PulsatingDot} from '../pulsating_dot';
-import {useClickOutsideRef} from '../common/hooks/useClickOutsideRef';
 
 import {TourTipBackdrop} from './tour_tip_backdrop';
 import './tour_tip.scss';
@@ -42,8 +41,6 @@ type Props = {
     className?: string;
     hideBackdrop?: boolean;
     tippyBlueStyle?: boolean;
-    redrawBackdrop?: boolean;
-    setRedrawBackdrop?: any;
 
     // if you don't want punchOut just assign null, keep null as hook may return null first than actual value
     overlayPunchOut: PunchOutCoordsHeightAndWidth | null;
@@ -97,21 +94,9 @@ export const TourTip = ({
             handleJump(event, jumpToStep);
         }
     };
-    const [shouldHideBackdrop, setShouldHideBackdrop] = useState(!hideBackdrop);
 
     // This needs to be changed if root-portal node isn't available to maybe body
     const rootPortal = document.getElementById('root-portal');
-
-    useClickOutsideRef(triggerRef, () => {
-        setShouldHideBackdrop(false);
-    });
-
-    const handleLocalOpen = (e: React.MouseEvent) => {
-        if (!hideBackdrop) {
-            setShouldHideBackdrop(true);
-        }
-        handleOpen?.(e);
-    };
 
     const dots = [];
     if (!singleTip && tourSteps) {
@@ -216,7 +201,7 @@ export const TourTip = ({
             <div
                 id='tipButton'
                 ref={triggerRef}
-                onClick={handleLocalOpen}
+                onClick={handleOpen}
                 className='tour-tip__pulsating-dot-ctr'
                 data-pulsating-dot-placement={pulsatingDotPlacement || 'right'}
                 style={{
@@ -232,7 +217,7 @@ export const TourTip = ({
                 interactivePunchOut={interactivePunchOut}
                 overlayPunchOut={overlayPunchOut}
                 appendTo={rootPortal!}
-                transparent={!shouldHideBackdrop}
+                transparent={hideBackdrop}
             />
             {show && (
                 <Tippy

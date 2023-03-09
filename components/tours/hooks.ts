@@ -235,15 +235,15 @@ export const useGetTourtipRedraw = (elementId: string) => {
                 observer.unobserve(element);
             };
         }
-    }, []);
+    }, [elementId]);
+
+    const redrawToortip = useCallback(() => {
+        setRedraw(!redraw);
+    }, [redraw]);
 
     useEffect(() => {
         redrawToortip();
-    }, [width]);
-
-    const redrawToortip = () => {
-        setRedraw(!redraw);
-    };
+    }, [width, redrawToortip]);
 
     return {redraw};
 };
